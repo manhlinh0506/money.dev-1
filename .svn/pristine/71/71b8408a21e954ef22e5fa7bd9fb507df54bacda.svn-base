@@ -1,0 +1,78 @@
+2015-04-03 09:28:47 Error: [MissingComponentException] Component class DebugKitComponent could not be found.
+Exception Attributes: array (
+  'class' => 'DebugKitComponent',
+  'plugin' => false,
+)
+Request URL: /
+Stack Trace:
+#0 C:\xampp\htdocs\vy\money.dev\lib\Cake\Controller\ComponentCollection.php(53): ComponentCollection->load('DebugKit', Array)
+#1 C:\xampp\htdocs\vy\money.dev\lib\Cake\Controller\Controller.php(643): ComponentCollection->init(Object(PagesController))
+#2 C:\xampp\htdocs\vy\money.dev\lib\Cake\Routing\Dispatcher.php(188): Controller->constructClasses()
+#3 C:\xampp\htdocs\vy\money.dev\lib\Cake\Routing\Dispatcher.php(167): Dispatcher->_invoke(Object(PagesController), Object(CakeRequest))
+#4 C:\xampp\htdocs\vy\money.dev\app\webroot\index.php(118): Dispatcher->dispatch(Object(CakeRequest), Object(CakeResponse))
+#5 {main}
+2015-04-03 09:31:02 Error: [MissingComponentException] Component class DebugKitComponent could not be found.
+Exception Attributes: array (
+  'class' => 'DebugKitComponent',
+  'plugin' => false,
+)
+Request URL: /
+Stack Trace:
+#0 C:\xampp\htdocs\vy\money.dev\lib\Cake\Controller\ComponentCollection.php(53): ComponentCollection->load('DebugKit', Array)
+#1 C:\xampp\htdocs\vy\money.dev\lib\Cake\Controller\Controller.php(643): ComponentCollection->init(Object(PagesController))
+#2 C:\xampp\htdocs\vy\money.dev\lib\Cake\Routing\Dispatcher.php(188): Controller->constructClasses()
+#3 C:\xampp\htdocs\vy\money.dev\lib\Cake\Routing\Dispatcher.php(167): Dispatcher->_invoke(Object(PagesController), Object(CakeRequest))
+#4 C:\xampp\htdocs\vy\money.dev\app\webroot\index.php(118): Dispatcher->dispatch(Object(CakeRequest), Object(CakeResponse))
+#5 {main}
+2015-04-03 09:31:03 Error: [MissingComponentException] Component class DebugKitComponent could not be found.
+Exception Attributes: array (
+  'class' => 'DebugKitComponent',
+  'plugin' => false,
+)
+Request URL: /
+Stack Trace:
+#0 C:\xampp\htdocs\vy\money.dev\lib\Cake\Controller\ComponentCollection.php(53): ComponentCollection->load('DebugKit', Array)
+#1 C:\xampp\htdocs\vy\money.dev\lib\Cake\Controller\Controller.php(643): ComponentCollection->init(Object(PagesController))
+#2 C:\xampp\htdocs\vy\money.dev\lib\Cake\Routing\Dispatcher.php(188): Controller->constructClasses()
+#3 C:\xampp\htdocs\vy\money.dev\lib\Cake\Routing\Dispatcher.php(167): Dispatcher->_invoke(Object(PagesController), Object(CakeRequest))
+#4 C:\xampp\htdocs\vy\money.dev\app\webroot\index.php(118): Dispatcher->dispatch(Object(CakeRequest), Object(CakeResponse))
+#5 {main}
+2015-04-03 09:31:03 Error: [MissingComponentException] Component class DebugKitComponent could not be found.
+Exception Attributes: array (
+  'class' => 'DebugKitComponent',
+  'plugin' => false,
+)
+Request URL: /
+Stack Trace:
+#0 C:\xampp\htdocs\vy\money.dev\lib\Cake\Controller\ComponentCollection.php(53): ComponentCollection->load('DebugKit', Array)
+#1 C:\xampp\htdocs\vy\money.dev\lib\Cake\Controller\Controller.php(643): ComponentCollection->init(Object(PagesController))
+#2 C:\xampp\htdocs\vy\money.dev\lib\Cake\Routing\Dispatcher.php(188): Controller->constructClasses()
+#3 C:\xampp\htdocs\vy\money.dev\lib\Cake\Routing\Dispatcher.php(167): Dispatcher->_invoke(Object(PagesController), Object(CakeRequest))
+#4 C:\xampp\htdocs\vy\money.dev\app\webroot\index.php(118): Dispatcher->dispatch(Object(CakeRequest), Object(CakeResponse))
+#5 {main}
+2015-04-03 09:31:04 Error: [MissingComponentException] Component class DebugKitComponent could not be found.
+Exception Attributes: array (
+  'class' => 'DebugKitComponent',
+  'plugin' => false,
+)
+Request URL: /
+Stack Trace:
+#0 C:\xampp\htdocs\vy\money.dev\lib\Cake\Controller\ComponentCollection.php(53): ComponentCollection->load('DebugKit', Array)
+#1 C:\xampp\htdocs\vy\money.dev\lib\Cake\Controller\Controller.php(643): ComponentCollection->init(Object(PagesController))
+#2 C:\xampp\htdocs\vy\money.dev\lib\Cake\Routing\Dispatcher.php(188): Controller->constructClasses()
+#3 C:\xampp\htdocs\vy\money.dev\lib\Cake\Routing\Dispatcher.php(167): Dispatcher->_invoke(Object(PagesController), Object(CakeRequest))
+#4 C:\xampp\htdocs\vy\money.dev\app\webroot\index.php(118): Dispatcher->dispatch(Object(CakeRequest), Object(CakeResponse))
+#5 {main}
+2015-04-03 09:31:04 Error: [MissingComponentException] Component class DebugKitComponent could not be found.
+Exception Attributes: array (
+  'class' => 'DebugKitComponent',
+  'plugin' => false,
+)
+Request URL: /
+Stack Trace:
+#0 C:\xampp\htdocs\vy\money.dev\lib\Cake\Controller\ComponentCollection.php(53): ComponentCollection->load('DebugKit', Array)
+#1 C:\xampp\htdocs\vy\money.dev\lib\Cake\Controller\Controller.php(643): ComponentCollection->init(Object(PagesController))
+#2 C:\xampp\htdocs\vy\money.dev\lib\Cake\Routing\Dispatcher.php(188): Controller->constructClasses()
+#3 C:\xampp\htdocs\vy\money.dev\lib\Cake\Routing\Dispatcher.php(167): Dispatcher->_invoke(Object(PagesController), Object(CakeRequest))
+#4 C:\xampp\htdocs\vy\money.dev\app\webroot\index.php(118): Dispatcher->dispatch(Object(CakeRequest), Object(CakeResponse))
+#5 {main}
