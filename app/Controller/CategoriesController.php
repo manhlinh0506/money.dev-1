@@ -13,7 +13,7 @@ class CategoriesController extends AppController {
  *
  * @var array
  */
-	public $components = array('Paginator','Session');
+	public $components = array('Paginator');
 
 /**
  * index method
