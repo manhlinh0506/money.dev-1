@@ -64,22 +64,7 @@ class User extends AppModel {
  *
  * @var array
  */
-	public $belongsTo = array(
-		'DefaultWallet' => array(
-			'className' => 'DefaultWallet',
-			'foreignKey' => 'default_wallet_id',
-			'conditions' => '',
-			'fields' => '',
-			'order' => ''
-		),
-		'CurrentWallet' => array(
-			'className' => 'CurrentWallet',
-			'foreignKey' => 'current_wallet_id',
-			'conditions' => '',
-			'fields' => '',
-			'order' => ''
-		)
-	);
+	
 
 /**
  * hasMany associations

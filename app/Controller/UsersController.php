@@ -24,7 +24,49 @@ class UsersController extends AppController {
 		$this->User->recursive = 0;
 		$this->set('users', $this->Paginator->paginate());
 	}
-
+           
+        
+        public function login()
+        {
+           // validation for username and password
+//        $validate = array(
+//                'username' => array (
+//                        'rule1' => array (
+//                                'rule' => 'notEmpty',
+//                                    'message'=>'Email can not empty'
+//                                ),
+//                        'rule2' => array (
+//                                'rule' => 'email',
+//                                    'message' => 'Email is not true'
+//                                )
+//                        ), 
+//		'password' => array (
+//			'notEmpty' => array (
+//				'rule' => array (
+//					'notEmpty' 
+//				) 
+//			) 
+//		)
+//        );
+        //if($this->validates($this->validate)){
+            $error = '';
+//               if($this->Session->read($this->_sessionUsername))
+//                   $this->redirect ('view');
+               if(isset($_POST['submit'])) {
+                   $username = $_POST['username'];
+                   $password = $_POST['password'];
+                   if($this->User->checkLogin($username,$password)) {
+                       $this->Session->write($this->_sessionUsername,$username);
+                       $this->redirect('view');
+                   } else {
+                       $error = 'Username or password is wrong';
+                       $this->Session->setFlash($error);
+                   }
+               }
+        //}
+            $this->render("/users/login"); 
+        
+        }
 /**
  * view method
  *
@@ -55,9 +97,6 @@ class UsersController extends AppController {
 				$this->Session->setFlash(__('The user could not be saved. Please, try again.'));
 			}
 		}
-		$defaultWallets = $this->User->DefaultWallet->find('list');
-		$currentWallets = $this->User->CurrentWallet->find('list');
-		$this->set(compact('defaultWallets', 'currentWallets'));
 	}
 
 /**
@@ -82,9 +121,6 @@ class UsersController extends AppController {
 			$options = array('conditions' => array('User.' . $this->User->primaryKey => $id));
 			$this->request->data = $this->User->find('first', $options);
 		}
-		$defaultWallets = $this->User->DefaultWallet->find('list');
-		$currentWallets = $this->User->CurrentWallet->find('list');
-		$this->set(compact('defaultWallets', 'currentWallets'));
 	}
 
 /**

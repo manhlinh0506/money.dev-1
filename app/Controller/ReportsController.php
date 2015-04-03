@@ -45,19 +45,19 @@ class ReportsController extends AppController {
  *
  * @return void
  */
-	public function add() {
-		if ($this->request->is('post')) {
-			$this->Report->create();
-			if ($this->Report->save($this->request->data)) {
-				$this->Session->setFlash(__('The report has been saved.'));
-				return $this->redirect(array('action' => 'index'));
-			} else {
-				$this->Session->setFlash(__('The report could not be saved. Please, try again.'));
-			}
-		}
-		$wallets = $this->Report->Wallet->find('list');
-		$this->set(compact('wallets'));
-	}
+//	public function add() {
+//		if ($this->request->is('post')) {
+//			$this->Report->create();
+//			if ($this->Report->save($this->request->data)) {
+//				$this->Session->setFlash(__('The report has been saved.'));
+//				return $this->redirect(array('action' => 'index'));
+//			} else {
+//				$this->Session->setFlash(__('The report could not be saved. Please, try again.'));
+//			}
+//		}
+//		$wallets = $this->Report->Wallet->find('list');
+//		$this->set(compact('wallets'));
+//	}
 
 /**
  * edit method

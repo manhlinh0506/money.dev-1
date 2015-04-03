@@ -21,6 +21,11 @@ $cakeVersion = __d('cake_dev', 'CakePHP %s', Configure::version())
 <html>
 <head>
 	<?php echo $this->Html->charset(); ?>
+        <?php
+            echo $this->Html->css('bootstrap.css');
+            echo $this->Html->css('bootstrap-theme.min.css');
+            echo $this->Html->css('styles.css');
+          ?>
 	<title>
 		<?php echo $cakeDescription ?>:
 		<?php echo $this->fetch('title'); ?>
@@ -53,10 +58,10 @@ $cakeVersion = __d('cake_dev', 'CakePHP %s', Configure::version())
                     <!-- Collect the nav links, forms, and other content for toggling -->
                     <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
                         <ul class="nav navbar-nav">
-                            <li class="active"><a href="#">Wallets</a></li>
-                            <li><a href="#">Categories</a></li>
+                            <li class="active"><a href="<?php echo Router::url('/wallets', true);  ?>">Wallets</a></li>
+                            <li><a href="<?php echo Router::url('/categories', true);  ?>">Categories</a></li>
                             <li>
-                                <a href="#">Transactions</a>
+                                <a href="<?php echo Router::url('/transactions', true);  ?>">Transactions</a>
                             </li>
                         </ul>
                         <ul class="nav navbar-nav navbar-right">
@@ -66,7 +71,7 @@ $cakeVersion = __d('cake_dev', 'CakePHP %s', Configure::version())
                                         $username = $this->Session->read('user');
                                         if($username == null && $username =='') :
                                     ?>
-                                <a href="#" >Login</a>
+                                <a href="<?php echo Router::url('/users/login', true);  ?>" >Login</a>
                                     <?php else: ?>
                             <li class="dropdown">
                                 <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false"><?php echo $this->Session->read('user'); ?><span class="caret"></span></a>
@@ -110,6 +115,10 @@ $cakeVersion = __d('cake_dev', 'CakePHP %s', Configure::version())
 				<?php // echo $cakeVersion; ?>
 			</p>
 		</div>-->
+        <?php
+            echo $this->Html->script('jquery.min.js'); 
+            echo $this->Html->script('bootstrap.min.js');  
+        ?>
 	</div>
 	<?php # echo $this->element('sql_dump'); ?>
 </body>
