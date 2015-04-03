@@ -37,26 +37,79 @@ $cakeVersion = __d('cake_dev', 'CakePHP %s', Configure::version())
 </head>
 <body>
 	<div id="container">
-		<div id="header">
-			<h1><?php echo $this->Html->link($cakeDescription, 'http://cakephp.org'); ?></h1>
-		</div>
+		<nav class="navbar navbar-inverse border-radius">
+                <div class="container-fluid">
+                    <!-- Brand and toggle get grouped for better mobile display -->
+                    <div class="navbar-header">
+                        <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1">
+                            <span class="sr-only">Toggle navigation</span>
+                            <span class="icon-bar"></span>
+                            <span class="icon-bar"></span>
+                            <span class="icon-bar"></span>
+                        </button>
+                        <a class="navbar-brand" href="#">Money Lover</a>
+                    </div>
+
+                    <!-- Collect the nav links, forms, and other content for toggling -->
+                    <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+                        <ul class="nav navbar-nav">
+                            <li class="active"><a href="#">Wallets</a></li>
+                            <li><a href="#">Categories</a></li>
+                            <li>
+                                <a href="#">Transactions</a>
+                            </li>
+                        </ul>
+                        <ul class="nav navbar-nav navbar-right">
+                            <li><a href="#">Monthly Report</a></li>
+                            <li class="dropdown">
+                                    <?php 
+                                        $username = $this->Session->read('user');
+                                        if($username == null && $username =='') :
+                                    ?>
+                                <a href="#" >Login</a>
+                                    <?php else: ?>
+                            <li class="dropdown">
+                                <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false"><?php echo $this->Session->read('user'); ?><span class="caret"></span></a>
+                                <ul class="dropdown-menu" role="menu">
+                                    <li><a href="#">Action</a></li>
+                                    <li><a href="#">Another action</a></li>
+                                    <li><a href="#">Something else here</a></li>
+                                    <li class="divider"></li>
+                                    <li><a href="#">Separated link</a></li>
+                                    <li class="divider"></li>
+                                    <li><a href="#">One more separated link</a></li>
+                                </ul>
+                            </li>
+                                    <?php endif;?>
+                            </li>
+                        </ul>
+                    </div><!-- /.navbar-collapse -->
+                </div><!-- /.container-fluid -->
+            </nav>  
 		<div id="content">
 
 			<?php echo $this->Session->flash(); ?>
 
 			<?php echo $this->fetch('content'); ?>
 		</div>
-		<div id="footer">
-			<?php echo $this->Html->link(
-					$this->Html->image('cake.power.gif', array('alt' => $cakeDescription, 'border' => '0')),
-					'http://www.cakephp.org/',
-					array('target' => '_blank', 'escape' => false, 'id' => 'cake-powered')
-				);
+            <footer class='footer'>
+                <div class='row'>
+                    <div class='col-md-12 text-center'>
+                        <p>le manh linh</p>
+                    </div>
+                </div>
+            </footer>
+<!--		<div id="footer">
+			<?php // echo $this->Html->link(
+//					$this->Html->image('cake.power.gif', array('alt' => $cakeDescription, 'border' => '0')),
+//					'http://www.cakephp.org/',
+//					array('target' => '_blank', 'escape' => false, 'id' => 'cake-powered')
+//				);
 			?>
 			<p>
-				<?php echo $cakeVersion; ?>
+				<?php // echo $cakeVersion; ?>
 			</p>
-		</div>
+		</div>-->
 	</div>
 	<?php # echo $this->element('sql_dump'); ?>
 </body>
