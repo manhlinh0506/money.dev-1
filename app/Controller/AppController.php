@@ -32,5 +32,26 @@ App::uses('Controller', 'Controller');
  */
 class AppController extends Controller {
     public $helpers = array('Html','Form');
-    public $components = array('DebugKit.Toolbar','Session');
+    public $components = array('DebugKit.Toolbar','Session','Auth','Email');
+    
+    public function beforeFilter()
+    {
+    	//$this->Auth->allow('index', 'view');
+    	//Security::setHash('md5');
+    	/* $this->Auth->authenticate = array(
+    			AuthComponent::ALL => array(
+    					'userModel' => 'User',
+    					'fields' => array(
+    							'username' => 'email',
+    							'password' => 'password'
+    					),
+    			), 'Form'=> array(
+    					'passwordHasher' => 'md5'
+    			)
+    	); */
+    	$this->Auth->loginAction = '/users/login';
+    	$this->Auth->loginRedirect = '/wallets/add';
+    	$this->Auth->loginError = 'Email or password is wrong';
+    	$this->Auth->authError = 'Access denied';
+    }
 }

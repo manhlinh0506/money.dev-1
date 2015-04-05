@@ -41,19 +41,19 @@ class EmailConfig {
 
 	public $default = array(
 		'transport' => 'Mail',
-		'from' => 'you@localhost',
+		'from' => 'manhlinh0506@gmail.com',
 		//'charset' => 'utf-8',
 		//'headerCharset' => 'utf-8',
 	);
 
 	public $smtp = array(
 		'transport' => 'Smtp',
-		'from' => array('site@localhost' => 'My Site'),
+		'from' => array('money.local' => 'My Site'),
 		'host' => 'localhost',
 		'port' => 25,
 		'timeout' => 30,
-		'username' => 'user',
-		'password' => 'secret',
+		'username' => 'manhlinh0506@gmail.com',
+		'password' => 'thiencopro',
 		'client' => null,
 		'log' => false,
 		//'charset' => 'utf-8',
@@ -90,5 +90,12 @@ class EmailConfig {
 		//'charset' => 'utf-8',
 		//'headerCharset' => 'utf-8',
 	);
-
+	
+	public $gmail = array(
+			'host' => 'ssl://smtp.gmail.com',
+			'port' => 465,
+			'username' => 'mail.example0506@gmail.com',
+			'password' => 'manhlinh',
+			'transport' => 'Smtp',
+	);
 }

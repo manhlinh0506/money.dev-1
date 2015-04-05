@@ -1,5 +1,6 @@
 <?php
 App::uses('AppModel', 'Model');
+App::uses('BlowfishPasswordHasher', 'Controller/Component/Auth');
 /**
  * User Model
  *
@@ -9,6 +10,7 @@ App::uses('AppModel', 'Model');
  */
 class User extends AppModel {
 
+	public $name = 'User';
 /**
  * Validation rules
  *
@@ -18,12 +20,17 @@ class User extends AppModel {
 		'username' => array(
 			'notEmpty' => array(
 				'rule' => array('notEmpty'),
+				
 				//'message' => 'Your custom message here',
 				//'allowEmpty' => false,
 				//'required' => false,
 				//'last' => false, // Stop validation after this rule
 				//'on' => 'create', // Limit validation to 'create' or 'update' operations
 			),
+			'email' => array(
+				'rule' => array('email'),
+				'message' => 'Invalid email'
+			)
 		),
 		'password' => array(
 			'notEmpty' => array(
@@ -35,7 +42,7 @@ class User extends AppModel {
 				//'on' => 'create', // Limit validation to 'create' or 'update' operations
 			),
 		),
-		'default_wallet_id' => array(
+		'default_wallet' => array(
 			'numeric' => array(
 				'rule' => array('numeric'),
 				//'message' => 'Your custom message here',
@@ -45,7 +52,7 @@ class User extends AppModel {
 				//'on' => 'create', // Limit validation to 'create' or 'update' operations
 			),
 		),
-		'current_wallet_id' => array(
+		'current_wallet' => array(
 			'numeric' => array(
 				'rule' => array('numeric'),
 				//'message' => 'Your custom message here',
@@ -59,13 +66,14 @@ class User extends AppModel {
 
 	//The Associations below have been created with all possible keys, those that are not needed can be removed
 
-/**
- * belongsTo associations
- *
- * @var array
- */
-	
 
+	/* function beforeSave($options = a){
+		if(isset($this->data[$this->name]['password'])) {
+			$this->data[$this->name]['password'] = Security::hash(($this->data[$this->name]['password']),'md5');
+		}
+		return true;
+	} */
+	
 /**
  * hasMany associations
  *

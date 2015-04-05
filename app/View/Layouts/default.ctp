@@ -116,8 +116,8 @@ $cakeVersion = __d('cake_dev', 'CakePHP %s', Configure::version())
 			</p>
 		</div>-->
         <?php
-            echo $this->Html->script('jquery.min.js'); 
-            echo $this->Html->script('bootstrap.min.js');  
+            //echo $this->Html->script('jquery.min.js'); 
+            //echo $this->Html->script('bootstrap.min.js');  
         ?>
 	</div>
 	<?php // echo $this->element('sql_dump'); ?>
