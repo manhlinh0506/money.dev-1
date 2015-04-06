@@ -58,13 +58,27 @@ $cakeVersion = __d('cake_dev', 'CakePHP %s', Configure::version())
                     <!-- Collect the nav links, forms, and other content for toggling -->
                     <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
                         <ul class="nav navbar-nav">
-                            <li class="active"><?php echo $this->Html->link(__('Wallets'), array('controller' => 'wallets', 'action' => 'index')); ?></li>
+                           
+                            <li class="dropdown">
+                                <?php echo $this->Html->link(__('Wallets'), array('controller' => 'wallets', 'action' => 'index')); ?>
+                                <ul class="dropdown-menu" role="menu">
+                                    <li><a href="#">Action</a></li>
+                                    <li><a href="#">Another action</a></li>
+                                    <li><a href="#">Something else here</a></li>
+                                    <li class="divider"></li>
+                                    <li><a href="#">Separated link</a></li>
+                                    <li class="divider"></li>
+                                    <li><a href="#">One more separated link</a></li>
+                                </ul>
+                            </li>
                             <li><?php echo $this->Html->link(__('Categories'), array('controller' => 'categories', 'action' => 'index')); ?></li>
                             <li>
                                 <?php echo $this->Html->link(__('Transactions'), array('controller' => 'transactions', 'action' => 'index')); ?>
                             </li>
                         </ul>
                         <ul class="nav navbar-nav navbar-right">
+                            <li><?php echo $this->Html->link("eng",array('language'=>'eng'),array('target' => '_parent', 'escape' => false));?> </li>
+                            <li><?php echo $this->Html->link("vie",array('language'=>'vie'),array('target' => '_parent', 'escape' => false));?></li>
                             <li><a href="#">Monthly Report</a></li>
                             <li class="dropdown">
                                     <?php 
@@ -92,7 +106,7 @@ $cakeVersion = __d('cake_dev', 'CakePHP %s', Configure::version())
                 </div><!-- /.container-fluid -->
             </nav>  
 		<div id="content">
-
+                        
 			<?php echo $this->Session->flash(); ?>
 
 			<?php echo $this->fetch('content'); ?>

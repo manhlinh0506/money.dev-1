@@ -96,4 +96,5 @@ class Wallet extends AppModel {
 		)
 	);
 
+   
 }

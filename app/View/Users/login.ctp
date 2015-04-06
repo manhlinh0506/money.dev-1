@@ -10,4 +10,5 @@
         	echo $this->Form->input('password'); ?>
             <?php echo $this->Form->end(__('Submit')); ?>
        <a href='<?php echo Router::url('/users/add', true); ?>'> Register</a>
+       <a href='<?php echo Router::url('/users/forgot', true); ?>'>Forgot password?</a>
 </div>

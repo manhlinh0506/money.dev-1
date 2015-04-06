@@ -17,58 +17,62 @@ class UsersController extends AppController {
 			'Paginator',
 	);
 	
-	public $_sessionUsername = '';
 	/**
 	 * index method
 	 *
 	 * @return void
 	 */
-	public function index() {
+	public function index() 
+        {
 		$this->User->recursive = 0;
 		$this->set ( 'users', $this->Paginator->paginate () );
 	}
-	public function beforeFilter() {
-		parent::beforeFilter ();
-		$this->Auth->allow ( 'add' );
-	}
-	function logout() {
+        
+//	public function beforeFilter() 
+//        {
+//		parent::beforeFilter ();
+//		$this->Auth->allow('add');        
+//	}
+        
+        /**
+	 * forgot method
+	 *
+	 * @return void
+	 */
+        function forgot()
+        {
+            if($this->request->is('post') && !empty($this->request->data)) {
+                if($this->checkEmail(mysql_real_escape_string($_POST['username']))) {
+                    $random_password = $this->generateRandomString();
+                    $this->sendEmail($_POST['username'], $random_password);
+                    $this->Session->setFlash('New password already sent to your email.');
+                } else {
+                    $this->Session->setFlash('Invalid Email');
+                }
+            }
+        }
+            
+	function logout() 
+        {
 		$this->redirect ( $this->Auth->logout () );
 	}
-	public function login() {
-		// validation for username and password
-		// $validate = array(
-		// 'username' => array (
-		// 'rule1' => array (
-		// 'rule' => 'notEmpty',
-		// 'message'=>'Email can not empty'
-		// ),
-		// 'rule2' => array (
-		// 'rule' => 'email',
-		// 'message' => 'Email is not true'
-		// )
-		// ),
-		// 'password' => array (
-		// 'notEmpty' => array (
-		// 'rule' => array (
-		// 'notEmpty'
-		// )
-		// )
-		// )
-		// );
-		// if($this->validates($this->validate)){
+        
+	public function login() 
+        {
 		$error = '';
-		if ($this->request->is('post')) {
-			echo $this->Auth->password($_POST['data']['User']['password']);
+		if ($this->request->is('post') && !empty($this->request->data)) {
+                       // $username = $_POST['data']['User']['username'];
+                       // $password = $_POST['data']['User']['password'];
+                       // die();
 			if ($this->Auth->login()) {
-				$this->Session->write ( $this->_sessionUsername, $username );
+				//$this->Session->write ( 'Username', $username );
 				$this->redirect ($this->Auth->redirect());
 			} else {
 				$error = 'Username or password is wrong';
 				$this->Session->setFlash ( $error );
 			}
 		}
-		// }
-		$this->render ( "/users/login" );
+                $this->render('/users/login');
 	}
 	
 	/**
@@ -95,17 +99,18 @@ class UsersController extends AppController {
 	 *
 	 * @return void
 	 */
-	public function add() {
+	public function add() 
+        {
 		if ($this->request->is ( 'post' )) {
 			if ($this->User->validates ()) {
 				$this->User->create ();
 				$random_password = $this->generateRandomString ();
-				$this->sendEmail ( $_POST ['data'] ['User'] ['username'], $random_password );
+				$this->sendEmail ( mysql_real_escape_string($_POST ['data'] ['User'] ['username']), $random_password );
 				$User = array (
 						'username' => $_POST ['data'] ['User'] ['username'],
-						'password' =>  $this->Auth->password($random_password)
+						'password' => $random_password
 				);
-				if ($this->User->save ( $User )) {
+				if ($this->User->save( $User )) {
 					$this->Session->setFlash ( __ ( 'The user has been saved. Password has already sent to your email.' ) );
 					return $this->redirect ( array (
 							'action' => 'login' 
@@ -124,7 +129,8 @@ class UsersController extends AppController {
 	 * @param string $id        	
 	 * @return void
 	 */
-	public function edit($id = null) {
+	public function edit($id = null) 
+        {
 		if (! $this->User->exists ( $id )) {
 			throw new NotFoundException ( __ ( 'Invalid user' ) );
 		}
@@ -157,7 +163,8 @@ class UsersController extends AppController {
 	 * @param string $id        	
 	 * @return void
 	 */
-	public function delete($id = null) {
+	public function delete($id = null) 
+        {
 		$this->User->id = $id;
 		if (! $this->User->exists ()) {
 			throw new NotFoundException ( __ ( 'Invalid user' ) );
@@ -197,7 +204,8 @@ class UsersController extends AppController {
 	 * @param string $length        	
 	 * @return string
 	 */
-	function generateRandomString($length = 8) {
+	function generateRandomString($length = 8) 
+        {
 		$characters = '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ';
 		$charactersLength = strlen ( $characters );
 		$randomString = '';
@@ -206,4 +214,38 @@ class UsersController extends AppController {
 		}
 		return $randomString;
 	}
+        
+        
+        /**
+ * checkLogin action
+ * return true
+ * @var array
+ */        
+        function checkLogin($username, $password)
+        {
+            $user = $this->User->find('all', array(
+                                            'fields' => array('User.username'),
+                                            'conditions' => array(
+                                            'User.username' => mysql_real_escape_string($username),
+                                            'User.password' => Security::hash(mysql_real_escape_string($password))
+                        )
+                    )
+                );
+            if(count($user)>0) {
+                return true;
+            }
+            else return false;
+        }
+        
+        function checkEmail($email) {
+            $exist_email = $this->User->find('all',array(
+                'fields' => 'User.username',
+                'conditions' => array('username' => $email))
+            );
+            if(count($exist_email) > 0) {
+                return true;
+            } else {
+                return false;
+            }
+        }
 }

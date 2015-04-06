@@ -32,26 +32,57 @@ App::uses('Controller', 'Controller');
  */
 class AppController extends Controller {
     public $helpers = array('Html','Form');
-    public $components = array('DebugKit.Toolbar','Session','Auth','Email');
+    public $components = array('DebugKit.Toolbar','Session','Auth' ,'Email','Cookie');
     
     public function beforeFilter()
     {
-    	//$this->Auth->allow('index', 'view');
+        //$this->_setLanguage();
+    	$this->Auth->allow('index', 'view','add', 'edit','delete','forgot');
     	//Security::setHash('md5');
-    	/* $this->Auth->authenticate = array(
-    			AuthComponent::ALL => array(
-    					'userModel' => 'User',
-    					'fields' => array(
-    							'username' => 'email',
-    							'password' => 'password'
-    					),
-    			), 'Form'=> array(
-    					'passwordHasher' => 'md5'
-    			)
-    	); */
-    	$this->Auth->loginAction = '/users/login';
-    	$this->Auth->loginRedirect = '/wallets/add';
-    	$this->Auth->loginError = 'Email or password is wrong';
-    	$this->Auth->authError = 'Access denied';
+    	//$this->Auth->allow("users/add");
+        //$this->Auth->allow("users/login", 'users/add');
+        $this->set('userlogin',$this->Auth->user());
+        Configure::write('Config.language', $this->Session->read('Config.language'));
     }
+   
+//    function _setLanguage() {
+//        if ($this->Cookie->read('lang') && !$this->Session->check('Config.language')) {
+//            $this->Session->write('Config.language', $this->Cookie->read('lang'));
+//        }
+//        elseif(isset($this->params->params["named"]['language']) && ($this->params->params["named"]['language'] != $this->Session->read('Config.language'))) {
+//            $this->Session->write('Config.language', $this->params->params["named"]['language']);
+//            $this->Cookie->write('lang', $this->params->params["named"]['language'], false, '1 minutes');
+//        }
+//    }
+    
+/*
+ * check login
+ */    
+    function _isLogin(){
+    $login = FALSE;
+    if($this->Auth->user()){
+        $login = TRUE;
+    }
+    return $login;
+  }
+  
+   /**
+   * check userID
+   */ 
+  function _usersUserID(){
+    $users_userid = NULL;
+    if($this->Auth->user())
+        $users_userid = $this->Auth->user("id");
+    return $users_userid;
+  }
+  
+  /**
+   * check username
+   */ 
+  function _usersUsername(){
+    $users_username = NULL;
+    if($this->Auth->user())
+        $users_username = $this->Auth->user("username");
+    return $users_username;
+  }
 }

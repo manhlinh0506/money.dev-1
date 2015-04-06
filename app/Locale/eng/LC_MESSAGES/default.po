@@ -1,0 +1,11 @@
+msgid ""
+msgstr ""
+
+msgid "User"
+msgstr "User"
+
+msgid "Categories"
+msgstr "Categories"
+
+msgid "Login"
+msgstr "Login"

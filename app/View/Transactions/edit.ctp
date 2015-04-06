@@ -9,7 +9,6 @@
 		echo $this->Form->input('category_id');
 		echo $this->Form->input('delete_flag');
 		echo $this->Form->input('date_of_execution');
-		echo $this->Form->input('parent_transaction');
 	?>
 	</fieldset>
 <?php echo $this->Form->end(__('Submit')); ?>

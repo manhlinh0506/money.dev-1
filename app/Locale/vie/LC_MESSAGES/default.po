@@ -1,0 +1,11 @@
+msgid ""
+msgstr ""
+
+msgid "Users"
+msgstr "Tài khoản"
+
+msgid "Categories"
+msgstr "Danh mục"
+
+msgid "Login"
+msgstr "Đăng nhập"

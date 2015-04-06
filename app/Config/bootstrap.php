@@ -115,3 +115,4 @@ CakeLog::config('error', array(
 
 
 CakePlugin::load('DebugKit');
+Configure::write('Config.language', 'eng');

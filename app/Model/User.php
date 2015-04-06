@@ -1,6 +1,5 @@
 <?php
 App::uses('AppModel', 'Model');
-App::uses('BlowfishPasswordHasher', 'Controller/Component/Auth');
 /**
  * User Model
  *
@@ -66,13 +65,19 @@ class User extends AppModel {
 
 	//The Associations below have been created with all possible keys, those that are not needed can be removed
 
-
-	/* function beforeSave($options = a){
-		if(isset($this->data[$this->name]['password'])) {
-			$this->data[$this->name]['password'] = Security::hash(($this->data[$this->name]['password']),'md5');
-		}
-		return true;
-	} */
+        
+/**
+ * beforeSace function
+ * return true
+ * @var array
+ */        
+        public function beforeSave($options = array()) 
+        {
+            if (isset($this->data[$this->alias]['password'])) {
+                    $this->data[$this->alias]['password'] = AuthComponent::password($this->data[$this->alias]['password']);
+            }
+            return true;
+        }
 	
 /**
  * hasMany associations
@@ -95,4 +100,6 @@ class User extends AppModel {
 		)
 	);
 
+
 }
+?>

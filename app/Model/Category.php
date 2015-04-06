@@ -9,7 +9,7 @@ App::uses('AppModel', 'Model');
  * @property Transaction $Transaction
  */
 class Category extends AppModel {
-
+    public $name = 'Category';
 /**
  * Validation rules
  *

@@ -4,7 +4,6 @@
 		<legend><?php echo __('Add Category'); ?></legend>
 	<?php
 		echo $this->Form->input('name');
-		echo $this->Form->input('delete_flag');
 		echo $this->Form->input('wallet_id');
 		echo $this->Form->input('typename_id');
 		echo $this->Form->input('special_id');
@@ -19,8 +18,6 @@
 		<li><?php echo $this->Html->link(__('List Categories'), array('action' => 'index')); ?></li>
 		<li><?php echo $this->Html->link(__('List Wallets'), array('controller' => 'wallets', 'action' => 'index')); ?> </li>
 		<li><?php echo $this->Html->link(__('New Wallet'), array('controller' => 'wallets', 'action' => 'add')); ?> </li>
-		<li><?php echo $this->Html->link(__('List Typenames'), array('controller' => 'typenames', 'action' => 'index')); ?> </li>
-		<li><?php echo $this->Html->link(__('New Typename'), array('controller' => 'typenames', 'action' => 'add')); ?> </li>
 		<li><?php echo $this->Html->link(__('List Specials'), array('controller' => 'specials', 'action' => 'index')); ?> </li>
 		<li><?php echo $this->Html->link(__('New Special'), array('controller' => 'specials', 'action' => 'add')); ?> </li>
 		<li><?php echo $this->Html->link(__('List Transactions'), array('controller' => 'transactions', 'action' => 'index')); ?> </li>

@@ -29,7 +29,9 @@
  * ...and connect the rest of 'Pages' controller's URLs.
  */
 	Router::connect('/pages/*', array('controller' => 'pages', 'action' => 'display'));
-
+        
+        //multi lang
+        Router::connect('/:language/:controller/:action/*',array(),array('language' => '[a-z]{3}'));
 /**
  * Load all plugin routes. See the CakePlugin documentation on
  * how to customize the loading of plugin routes.
