@@ -119,5 +119,58 @@ class Category extends AppModel {
 			'counterQuery' => ''
 		)
 	);
+        
+        
+    /**
+     * deleteWallet method
+     * define all transactions of category with category id = $id
+     * @throws NotFoundException
+     * @param string $id
+     * @return array
+     */
+    public function getTransaction($id) {
+        $list_transaction = $this->Transaction->find('all', array(
+            'fields' => array('Transaction.id'),
+            'conditions' => array('category_id' => $id)
+                )
+        );
+        return $list_transaction;
+    }
+
+    /**
+     * deleteCategory method
+     * delete all transactions of category with category id = $id
+     * @throws NotFoundException
+     * @param array $id
+     * @return boolean
+     */
+    public function deleteCategory($list_transaction, $id) {
+        $ds = $this->getDataSource();
+        $ds->begin();
+        $flag_transaction = true;
+        $flag_category = true;
+        if (count($list_transaction) > 0) {
+            foreach ($list_transaction as $transaction) {
+                if ($this->Transaction->delete($transaction['Transaction']['id'])) {
+                    $flag_transaction = true;
+                } else {
+                    $flag_transaction = false;
+                    break;
+                }
+            }
+        }
+        if ($this->delete($id)) {
+            $flag_category = true;
+        } else {
+            $flag_category = false;
+        }
+        if ($flag_transaction && $flag_category) {
+            $ds->commit();
+            return true;
+        } else {
+            $ds->rollback();
+            return false;
+        }
+    }
 
 }

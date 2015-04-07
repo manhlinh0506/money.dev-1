@@ -27,3 +27,4 @@ and open the template in the editor.
 .margin-top-10 {margin-top:10px;}
 .login-error {color: red}
 .container-fluid ul>li {margin:0 0;}
+a {text-decoration: none !important;}

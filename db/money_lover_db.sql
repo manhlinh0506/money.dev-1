@@ -3,7 +3,7 @@
 -- http://www.phpmyadmin.net
 --
 -- Host: 127.0.0.1
--- Generation Time: Apr 07, 2015 at 03:23 AM
+-- Generation Time: Apr 07, 2015 at 12:32 PM
 -- Server version: 5.6.21
 -- PHP Version: 5.5.19
 
@@ -43,9 +43,7 @@ CREATE TABLE IF NOT EXISTS `categories` (
 --
 
 INSERT INTO `categories` (`id`, `name`, `created`, `modified`, `delete_flag`, `wallet_id`, `typename_id`, `special_id`) VALUES
-(13, 'tra tien', '2015-04-22 00:00:00', '2015-04-25 00:00:00', 0, 11, 1, 1),
 (14, 'study', '2015-04-01 00:00:00', '2015-04-01 00:00:00', 0, 14, 2, 1),
-(16, 'hang out', '2015-04-01 00:00:00', '2015-04-01 00:00:00', 0, 7, 1, 1),
 (17, 'vay hang xom', '2015-04-22 00:00:00', '2015-04-25 00:00:00', 0, 12, 2, 1);
 
 -- --------------------------------------------------------
@@ -56,17 +54,19 @@ INSERT INTO `categories` (`id`, `name`, `created`, `modified`, `delete_flag`, `w
 
 CREATE TABLE IF NOT EXISTS `currencies` (
 `id` int(3) NOT NULL,
-  `name` varchar(3) COLLATE utf8_unicode_ci NOT NULL
-) ENGINE=InnoDB AUTO_INCREMENT=5 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+  `name` varchar(3) COLLATE utf8_unicode_ci NOT NULL,
+  `rate` decimal(10,2) NOT NULL
+) ENGINE=InnoDB AUTO_INCREMENT=6 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 --
 -- Dumping data for table `currencies`
 --
 
-INSERT INTO `currencies` (`id`, `name`) VALUES
-(1, 'lao'),
-(3, 'VND'),
-(4, 'BAT');
+INSERT INTO `currencies` (`id`, `name`, `rate`) VALUES
+(1, 'lao', '8026.60'),
+(3, 'VND', '21600.00'),
+(4, 'BAT', '32.57'),
+(5, 'USD', '1.00');
 
 -- --------------------------------------------------------
 
@@ -120,16 +120,14 @@ CREATE TABLE IF NOT EXISTS `transactions` (
   `delete_flag` tinyint(2) NOT NULL,
   `date_of_execution` date NOT NULL,
   `parent_transaction` int(9) DEFAULT NULL
-) ENGINE=InnoDB AUTO_INCREMENT=11 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=10 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 --
 -- Dumping data for table `transactions`
 --
 
 INSERT INTO `transactions` (`id`, `name`, `transaction_value`, `created`, `modified`, `category_id`, `delete_flag`, `date_of_execution`, `parent_transaction`) VALUES
-(8, 'choi', '1000.00', '2015-04-06 11:17:11', '2015-04-06 11:17:11', 13, 0, '2015-04-06', NULL),
-(9, 'nghi', '1000.00', '2015-04-06 11:17:20', '2015-04-06 11:17:20', 17, 0, '2015-04-06', NULL),
-(10, 'ngu', '12.00', '2015-04-06 11:17:30', '2015-04-06 11:17:30', 16, 0, '2015-04-06', NULL);
+(9, 'nghi', '1000.00', '2015-04-06 11:17:20', '2015-04-06 11:17:20', 17, 0, '2015-04-06', NULL);
 
 -- --------------------------------------------------------
 
@@ -164,18 +162,21 @@ CREATE TABLE IF NOT EXISTS `users` (
   `modified` datetime NOT NULL,
   `default_wallet` int(7) DEFAULT NULL,
   `current_wallet` int(7) DEFAULT NULL
-) ENGINE=InnoDB AUTO_INCREMENT=18 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=21 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 --
 -- Dumping data for table `users`
 --
 
 INSERT INTO `users` (`id`, `username`, `password`, `created`, `modified`, `default_wallet`, `current_wallet`) VALUES
-(1, 'linh', '12345678', '2015-04-01 00:00:00', '2015-04-01 00:00:00', 1, 1),
-(2, 'suhaoxaocucai@gmail.com', '5c1e39fdc8a6713cb10ba7cc2cbcb737', '2015-04-06 03:15:31', '2015-04-06 03:15:31', NULL, NULL),
-(15, 'manhlinh0506@gmail.com', '1bbd886460827015e5d605ed44252251', '2015-04-06 05:12:31', '2015-04-06 05:12:31', NULL, NULL),
+(1, 'linh', 'b71e6c35c3b7c743104cfa10fa864595', '2015-04-01 00:00:00', '2015-04-01 00:00:00', 1, 1),
+(2, '1', '5c1e39fdc8a6713cb10ba7cc2cbcb737', '2015-04-06 03:15:31', '2015-04-06 03:15:31', NULL, NULL),
+(15, '2', '1bbd886460827015e5d605ed44252251', '2015-04-06 05:12:31', '2015-04-06 05:12:31', NULL, NULL),
 (16, 'mail.example0506@gmail.com', '1bbd886460827015e5d605ed44252251', '2015-04-06 05:12:44', '2015-04-06 05:12:44', NULL, NULL),
-(17, 'gin', '2dee98876e6ccceebd7b8ef429a706ed5f0b183a', '2015-04-06 05:56:43', '2015-04-06 05:56:43', NULL, NULL);
+(17, 'gin', '2dee98876e6ccceebd7b8ef429a706ed5f0b183a', '2015-04-06 05:56:43', '2015-04-06 05:56:43', NULL, NULL),
+(18, 'suhaoxaocucai@gmail.com', 'a5302c2843eaadb36cc3451d18b75aef0534ce50', '2015-04-07 03:31:15', '2015-04-07 03:31:15', NULL, 19),
+(19, 'linh@gmail.com', 'cf2abcbad2d69ccfc74bbfadc86c48ab', '2015-04-07 03:59:40', '2015-04-07 03:59:40', NULL, NULL),
+(20, 'manhlinh0506@gmail.com', 'a5302c2843eaadb36cc3451d18b75aef0534ce50', '2015-04-07 10:51:47', '2015-04-07 10:51:47', NULL, 20);
 
 -- --------------------------------------------------------
 
@@ -192,7 +193,7 @@ CREATE TABLE IF NOT EXISTS `wallets` (
   `user_id` int(11) NOT NULL,
   `balance` decimal(10,0) NOT NULL,
   `delete_flag` tinyint(2) DEFAULT NULL
-) ENGINE=InnoDB AUTO_INCREMENT=15 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=21 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 --
 -- Dumping data for table `wallets`
@@ -200,10 +201,12 @@ CREATE TABLE IF NOT EXISTS `wallets` (
 
 INSERT INTO `wallets` (`id`, `name`, `currency_id`, `created`, `modified`, `user_id`, `balance`, `delete_flag`) VALUES
 (7, 'vi 1', 3, '2015-04-01 00:00:00', '2015-04-01 00:00:00', 1, '1000000', NULL),
-(11, 'vi 2', 1, '2015-04-01 00:00:00', '2015-04-01 00:00:00', 2, '1000000', NULL),
 (12, 'vi 3', 4, '2015-04-22 00:00:00', '2015-04-25 00:00:00', 16, '1000000', NULL),
 (13, 'vi 4', 4, '2015-04-01 00:00:00', '2015-04-01 00:00:00', 2, '1000000', NULL),
-(14, 'vi 5', 3, '2015-04-22 00:00:00', '2015-04-25 00:00:00', 15, '1000000', NULL);
+(14, 'vi 5', 3, '2015-04-22 00:00:00', '2015-04-25 00:00:00', 15, '1000000', NULL),
+(15, 'vi 6', 3, '2015-04-01 00:00:00', '2015-04-07 09:37:58', 18, '18', NULL),
+(19, 'vi 3', 4, '2015-04-07 09:03:51', '2015-04-07 09:03:51', 18, '1000', NULL),
+(20, 'vi 1 0506', 4, '2015-04-07 10:53:22', '2015-04-07 10:53:22', 20, '1000000', NULL);
 
 --
 -- Indexes for dumped tables
@@ -219,7 +222,7 @@ ALTER TABLE `categories`
 -- Indexes for table `currencies`
 --
 ALTER TABLE `currencies`
- ADD PRIMARY KEY (`id`);
+ ADD PRIMARY KEY (`id`), ADD UNIQUE KEY `name` (`name`);
 
 --
 -- Indexes for table `reports`
@@ -270,7 +273,7 @@ MODIFY `id` int(7) NOT NULL AUTO_INCREMENT,AUTO_INCREMENT=18;
 -- AUTO_INCREMENT for table `currencies`
 --
 ALTER TABLE `currencies`
-MODIFY `id` int(3) NOT NULL AUTO_INCREMENT,AUTO_INCREMENT=5;
+MODIFY `id` int(3) NOT NULL AUTO_INCREMENT,AUTO_INCREMENT=6;
 --
 -- AUTO_INCREMENT for table `reports`
 --
@@ -285,7 +288,7 @@ MODIFY `id` tinyint(2) NOT NULL AUTO_INCREMENT,AUTO_INCREMENT=3;
 -- AUTO_INCREMENT for table `transactions`
 --
 ALTER TABLE `transactions`
-MODIFY `id` int(9) NOT NULL AUTO_INCREMENT,AUTO_INCREMENT=11;
+MODIFY `id` int(9) NOT NULL AUTO_INCREMENT,AUTO_INCREMENT=10;
 --
 -- AUTO_INCREMENT for table `typenames`
 --
@@ -295,12 +298,12 @@ MODIFY `id` int(1) NOT NULL AUTO_INCREMENT,AUTO_INCREMENT=3;
 -- AUTO_INCREMENT for table `users`
 --
 ALTER TABLE `users`
-MODIFY `id` int(7) NOT NULL AUTO_INCREMENT,AUTO_INCREMENT=18;
+MODIFY `id` int(7) NOT NULL AUTO_INCREMENT,AUTO_INCREMENT=21;
 --
 -- AUTO_INCREMENT for table `wallets`
 --
 ALTER TABLE `wallets`
-MODIFY `id` int(7) NOT NULL AUTO_INCREMENT,AUTO_INCREMENT=15;
+MODIFY `id` int(7) NOT NULL AUTO_INCREMENT,AUTO_INCREMENT=21;
 --
 -- Constraints for dumped tables
 --

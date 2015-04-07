@@ -23,8 +23,9 @@ class WalletsController extends AppController {
      * @return void
      */
     public function index() {
-        $this->Wallet->recursive = 0;
-        $this->set('wallets', $this->Paginator->paginate());
+        $this->Paginator->settings = array(
+            'conditions' => array('Wallet.user_id' => $this->Auth->user('id')));
+        $this->set('wallets', $this->Paginator->paginate('Wallet'));
     }
 
     /**
@@ -34,13 +35,13 @@ class WalletsController extends AppController {
      * @param string $id
      * @return void
      */
-    public function view($id = null) {
-        if (!$this->Wallet->exists($id)) {
-            throw new NotFoundException(__('Invalid wallet'));
-        }
-        $options = array('conditions' => array('Wallet.' . $this->Wallet->primaryKey => $id));
-        $this->set('wallet', $this->Wallet->find('first', $options));
-    }
+//    public function view($id = null) {
+//        if (!$this->Wallet->exists($id)) {
+//            throw new NotFoundException(__('Invalid wallet'));
+//        }
+//        $options = array('conditions' => array('Wallet.' . $this->Wallet->primaryKey => $id));
+//        $this->set('wallet', $this->Wallet->find('first', $options));
+//    }
 
     /**
      * add method
@@ -49,17 +50,26 @@ class WalletsController extends AppController {
      */
     public function add() {
         if ($this->request->is('post')) {
-            $this->Wallet->create();
-            if ($this->Wallet->save($this->request->data)) {
-                $this->Session->setFlash(__('The wallet has been saved.'));
-                return $this->redirect(array('action' => 'index'));
-            } else {
-                $this->Session->setFlash(__('The wallet could not be saved. Please, try again.'));
+            $this->Wallet->set($this->request->data);
+            if ($this->Wallet->validates($this->Wallet->validate)) {
+                $wallet = array(
+                    'name' => $this->request->data('name'),
+                    'currency_id' => $this->request->data('currency_id'),
+                    'created' => date('Y-m-d H:i:s'),
+                    'modified' => date('Y-m-d H:i:s'),
+                    'user_id' => $this->Auth->user('id'),
+                    'balance' => $this->request->data('balance')
+                );
+                if ($this->Wallet->save($wallet)) {
+                    $this->Session->setFlash(__('The wallet has been saved.'));
+                    return $this->redirect(array('action' => 'index'));
+                } else {
+                    $this->Session->setFlash(__('The wallet could not be saved. Please, try again.'));
+                }
             }
         }
         $currencies = $this->Wallet->Currency->find('list');
-        $users = $this->Wallet->User->find('list');
-        $this->set(compact('currencies', 'users'));
+        $this->set(compact('currencies'));
     }
 
     /**
@@ -74,19 +84,27 @@ class WalletsController extends AppController {
             throw new NotFoundException(__('Invalid wallet'));
         }
         if ($this->request->is(array('post', 'put'))) {
-            if ($this->Wallet->save($this->request->data)) {
-                $this->Session->setFlash(__('The wallet has been saved.'));
-                return $this->redirect(array('action' => 'index'));
-            } else {
-                $this->Session->setFlash(__('The wallet could not be saved. Please, try again.'));
+            $this->Wallet->set($this->request->data);
+            if ($this->Wallet->validates($this->Wallet->validate)) {
+                $updateWallet = $this->Wallet->updateAll(
+                        array('Wallet.name' => "'" . $this->request->data('name') . "'",
+                    'Wallet.currency_id' => $this->request->data('currency_id'),
+                    'Wallet.modified' => "'" . date('Y-m-d H:i:s') . "'",
+                    'Wallet.balance' => $this->request->data('balance')), array('Wallet.id' => $this->request->data('id'))
+                );
+                if ($updateWallet) {
+                    $this->Session->setFlash(__('The wallet has been saved.'));
+                    return $this->redirect(array('action' => 'index'));
+                } else {
+                    $this->Session->setFlash(__('The wallet could not be saved. Please, try again.'));
+                }
             }
         } else {
             $options = array('conditions' => array('Wallet.' . $this->Wallet->primaryKey => $id));
             $this->request->data = $this->Wallet->find('first', $options);
         }
         $currencies = $this->Wallet->Currency->find('list');
-        $users = $this->Wallet->User->find('list');
-        $this->set(compact('currencies', 'users'));
+        $this->set(compact('currencies'));
     }
 
     /**
@@ -102,8 +120,8 @@ class WalletsController extends AppController {
             throw new NotFoundException(__('Invalid wallet'));
         }
         $this->request->allowMethod('post', 'delete');
-        $list_delete = $this->deleteWallet($id);
-        if ($this->deleteAllInfoOfWallet($list_delete, $id)) {
+        $list_delete = $this->Wallet->deleteWallet($id);
+        if ($this->Wallet->deleteAllInfoOfWallet($list_delete, $id)) {
             $this->Session->setFlash(__('The wallet has been deleted.'));
         } else {
             $this->Session->setFlash(__('The wallet could not be deleted. Please, try again.'));
@@ -112,105 +130,47 @@ class WalletsController extends AppController {
     }
 
     /**
-     * deleteWallet method
-     * define all transactions of categories of wallet with wallet id = $id
+     * changeWallet method
+     *
      * @throws NotFoundException
-     * @param string $id
-     * @return array
+     * @param  $id
+     * @return 
      */
-    public function deleteWallet($id) {
-        $list_categories = $this->Wallet->Category->find('all', array(
-            'fields' => array('Category.id'),
-            'conditions' => array('wallet_id' => $id)
-                )
-        );
-        $list_transacton = array();
-        $i = 0;
-        foreach ($list_categories as $category) {
-            $list_transacton[$i] = array('Category_id' => $category['Category']['id'], $this->Wallet->Category->Transaction->find('all', array(
-                    'fields' => array('Transaction.id'),
-                    'conditions' => array('category_id' => $category['Category']['id'])
-            )));
-            $i++;
+    public function changeWallet($id = null) {
+        if (!$this->Wallet->exists($id)) {
+            throw new NotFoundException(__('Invalid wallet'));
         }
-        return $list_transacton;
+        $changeWallet = $this->Wallet->User->updateAll(
+                array('User.current_wallet' => $id), array('User.id' => $this->Auth->user('id'))
+        );
+        if ($changeWallet) {
+            $userInfo = $this->Wallet->User->getUserInfo($this->Auth->user('id'));
+            $this->Session->write('Current_Wallet', $userInfo['User']['current_wallet']);
+            $this->Session->setFlash(__('The current wallet is changed.'));
+            return $this->redirect(array('action' => 'index'));
+        } else {
+            $this->Session->setFlash(__('The current wallet is not changed. Please try again.'));
+        }
     }
 
-    /**
-     * deleteAllInfoOfWallet method
-     * delete all transactions of categories of wallet with wallet id = $id
-     * @throws NotFoundException
-     * @param array $id
-     * @return boolean
-     */
-    function deleteAllInfoOfWallet($list_info, $id) {
-        $ds = $this->Wallet->getDataSource();
-        $ds->begin();
-        $flag_transaction = true;
-        $flag_category = true;
-        $flag_wallet = true;
-        $i = 0;
-        $transation_list = 0;
-        if (count($list_info) > 0) {
-            foreach ($list_info as $info) {
-                if (count($info[$transation_list]) > 1) {
-                    foreach ($info[$transation_list] as $transaction) {
-                        //                    echo '<pre>';
-                        //                    print_r($transaction['Transaction']['id']);
-                        //                    echo '</pre>';
-                        if ($this->Wallet->Category->Transaction->delete($transaction['Transaction']['id'])) {
-                            $flag_transaction = true;
-                        } else {
-                            $flag_transaction = false;
-                            break;
-                        }
-                    }
-                } else {
-                    //                if($this->Wallet->Category->Transaction->delete($info[$transation_list][$transation_list]['Transaction']['id'])) {
-                    //                    $flag = true;
-                    //                } else {
-                    //                    $flag = false;
-                    //                }
-                    if (count($info[$transation_list]) > 0) {
-                        if ($this->Wallet->Category->Transaction->delete($info[$transation_list][$transation_list]['Transaction']['id'])) {
-                            $flag_transaction = true;
-                        } else {
-                            $flag_transaction = false;
-                            break;
-                        }
-                        //                    echo $info[$transation_list][$transation_list]['Transaction']['id'];
-                    }
-                }
-                //            echo '<pre>';
-                //            print_r($info['Category_id']);
-                //            echo '</pre>';
-                if ($this->Wallet->Category->delete($info['Category_id'])) {
-                    $flag_category = true;
-                } else {
-                    $flag_category = false;
-                    break;
-                }
-                $i++;
-                if ($flag_transaction == false || $flag_category == false) {
-                    break;
-                }
+    public function tranfer($id = null) {
+        if (!$this->Wallet->exists($id)) {
+            throw new NotFoundException(__('Invalid wallet'));
+        }
+        if ($this->request->is(array('post', 'put'))) {
+            if ($this->Category->save($this->request->data)) {
+                $this->Session->setFlash(__('The category has been saved.'));
+                return $this->redirect(array('action' => 'index'));
+            } else {
+                $this->Session->setFlash(__('The category could not be saved. Please, try again.'));
             }
-        }
-        if ($this->Wallet->delete($id)) {
-            $flag_wallet = true;
         } else {
-            $flag_wallet = false;
+            $options = array('conditions' => array('Wallet.' . $this->Wallet->primaryKey => $id));
+            $this->request->data = $this->Wallet->find('first', $options);
         }
-//        echo '<pre>'; 
-//        print_r($list_info);
-//        echo '<pre>';
-        if ($flag_transaction && $flag_category && $flag_wallet) {
-            $ds->commit();
-            return true;
-        } else {
-            $ds->rollback();
-            return false;
-        }
+        $currencies = $this->Wallet->Currency->find('list');
+        $wallets = $this->Wallet->find('list', array('conditions' => array('Wallet.user_id' => $id)));
+        $this->set(compact('currencies', 'wallets'));
     }
 
 }

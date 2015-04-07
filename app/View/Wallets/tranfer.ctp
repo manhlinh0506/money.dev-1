@@ -1,10 +1,15 @@
 <div class="wallets form">
 <?php echo $this->Form->create('Wallet'); ?>
 	<fieldset>
-		<legend><?php echo __('Edit Wallet'); ?></legend>
+		<legend><?php echo __('Tranfer money'); ?></legend>
 	<?php
-		echo $this->Form->input('id', array('name'=>'id'));  
-		echo $this->Form->input('name', array('name'=>'name'));
+                echo __('From:');
+                echo $this->Form->input('wallet_name', array(
+                                                    'type' => 'select',
+'options'=>$wallets,
+'empty'=>false,
+                    )
+                );
                 echo $this->Form->input('currency_id', array('name'=>'currency_id'));
 		echo $this->Form->input('balance', array('name'=>'balance'));
 	?>

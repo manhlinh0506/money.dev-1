@@ -3,7 +3,7 @@
 	<fieldset>
 		<legend><?php echo __('Add User'); ?></legend>
 	<?php
-		echo $this->Form->input('username', array('label' => 'Email'));
+		echo $this->Form->input('username', array('label' => 'Email','name' =>'username'));
 	?>
 	</fieldset>
 <?php echo $this->Form->end(__('Register')); ?>

@@ -104,8 +104,8 @@ class CategoriesController extends AppController {
             throw new NotFoundException(__('Invalid category'));
         }
         $this->request->allowMethod('post', 'delete');
-        $list_transaction = $this->getTransaction($id);
-        if ($this->deleteCategory($list_transaction, $id)) {
+        $list_transaction = $this->Category->getTransaction($id);
+        if ($this->Category->deleteCategory($list_transaction, $id)) {
             $this->Session->setFlash(__('The category has been deleted.'));
         } else {
             $this->Session->setFlash(__('The category could not be deleted. Please, try again.'));
@@ -113,56 +113,5 @@ class CategoriesController extends AppController {
         return $this->redirect(array('action' => 'index'));
     }
 
-    /**
-     * deleteWallet method
-     * define all transactions of category with category id = $id
-     * @throws NotFoundException
-     * @param string $id
-     * @return array
-     */
-    public function getTransaction($id) {
-        $list_transaction = $this->Category->Transaction->find('all', array(
-            'fields' => array('Transaction.id'),
-            'conditions' => array('category_id' => $id)
-                )
-        );
-        return $list_transaction;
-    }
-
-    /**
-     * deleteCategory method
-     * delete all transactions of category with category id = $id
-     * @throws NotFoundException
-     * @param array $id
-     * @return boolean
-     */
-    public function deleteCategory($list_transaction, $id) {
-        $ds = $this->Category->getDataSource();
-        $ds->begin();
-        $flag_transaction = true;
-        $flag_category = true;
-        if (count($list_transaction) > 0) {
-            foreach ($list_transaction as $transaction) {
-                if ($this->Category->Transaction->delete($transaction['Transaction']['id'])) {
-                    $flag_transaction = true;
-                } else {
-                    $flag_transaction = false;
-                    break;
-                }
-            }
-        }
-        if ($this->Category->delete($id)) {
-            $flag_category = true;
-        } else {
-            $flag_category = false;
-        }
-        if ($flag_transaction && $flag_category) {
-            $ds->commit();
-            return true;
-        } else {
-            $ds->rollback();
-            return false;
-        }
-    }
-
+    
 }

@@ -32,26 +32,27 @@ App::uses('Controller', 'Controller');
  */
 class AppController extends Controller {
     public $helpers = array('Html','Form');
-    public $components = array('DebugKit.Toolbar','Session','Auth' ,'Email','Cookie');
+    public $components = array('DebugKit.Toolbar', 'Session', 'Auth' => array(
+            'loginRedirect' => array('controller' => 'wallets', 'action' => 'add'),
+            'logoutRedirect' => array('controller' => 'users', 'action' => 'login')
+        ) , 'Email');
     
     public function beforeFilter()
     {
-        //$this->_setLanguage();
-    	$this->Auth->allow('index', 'view','add', 'edit','delete','forgot');
-    	Security::setHash('md5');
-    	//$this->Auth->allow("users/add");
-        //$this->Auth->allow("users/login", 'users/add');
-        $this->set('userlogin',$this->Auth->user());
         Configure::write('Config.language', $this->Session->read('Config.language'));
+        $this->set('logged_in', $this->_isLogin());
+        $this->set('users_userid', $this->_usersUserID());
+        $this->set('users_username', $this->_usersUsername());
+        $this->Session->write('Current_Wallet', $this->_usersCurrentWallet());
     }
     
 /*
  * check login
  */    
     function _isLogin(){
-    $login = FALSE;
+    $login = false;
     if($this->Auth->user()){
-        $login = TRUE;
+        $login = true;
     }
     return $login;
   }
@@ -60,7 +61,7 @@ class AppController extends Controller {
    * check userID
    */ 
   function _usersUserID(){
-    $users_userid = NULL;
+    $users_userid = null;
     if($this->Auth->user())
         $users_userid = $this->Auth->user("id");
     return $users_userid;
@@ -70,9 +71,19 @@ class AppController extends Controller {
    * check username
    */ 
   function _usersUsername(){
-    $users_username = NULL;
+    $users_username = null;
     if($this->Auth->user())
         $users_username = $this->Auth->user("username");
     return $users_username;
+  }
+  
+  /**
+   * check current_wallet
+   */ 
+  function _usersCurrentWallet(){
+    $users_currentWallet = null;
+    if($this->Auth->user())
+        $users_currentWallet = $this->Auth->user("current_wallet");
+    return $users_currentWallet;
   }
 }

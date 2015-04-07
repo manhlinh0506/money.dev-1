@@ -58,22 +58,26 @@ $cakeVersion = __d('cake_dev', 'CakePHP %s', Configure::version())
                     <!-- Collect the nav links, forms, and other content for toggling -->
                     <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
                         <ul class="nav navbar-nav">
-                           
                             <li class="dropdown">
-                                <?php echo $this->Html->link(__('Wallets'), array('controller' => 'wallets', 'action' => 'index')); ?>
+                                <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">Wallets<span class="caret"></span></a>
                                 <ul class="dropdown-menu" role="menu">
-                                    <li><a href="#">Action</a></li>
-                                    <li><a href="#">Another action</a></li>
-                                    <li><a href="#">Something else here</a></li>
-                                    <li class="divider"></li>
-                                    <li><a href="#">Separated link</a></li>
-                                    <li class="divider"></li>
-                                    <li><a href="#">One more separated link</a></li>
+                                    <li><?php echo $this->Html->link(__('List wallets'), array('controller' => 'wallets', 'action' => 'index')); ?></li>
+                                    <li><?php echo $this->Html->link(__('Add wallets'), array('controller' => 'wallets', 'action' => 'add')); ?></li>
                                 </ul>
                             </li>
-                            <li><?php echo $this->Html->link(__('Categories'), array('controller' => 'categories', 'action' => 'index')); ?></li>
-                            <li>
-                                <?php echo $this->Html->link(__('Transactions'), array('controller' => 'transactions', 'action' => 'index')); ?>
+                            <li class="dropdown">
+                                <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">Categories<span class="caret"></span></a>
+                                <ul class="dropdown-menu" role="menu">
+                                    <li><?php echo $this->Html->link(__('List categories'), array('controller' => 'categories', 'action' => 'index')); ?></li>
+                                    <li><?php echo $this->Html->link(__('Add categories'), array('controller' => 'categories', 'action' => 'add')); ?></li>
+                                </ul>
+                            </li>
+                            <li class="dropdown">
+                                <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">Transactions<span class="caret"></span></a>
+                                <ul class="dropdown-menu" role="menu">
+                                    <li><?php echo $this->Html->link(__('List transactions'), array('controller' => 'transactions', 'action' => 'index')); ?></li>
+                                    <li><?php echo $this->Html->link(__('Add transactions'), array('controller' => 'transactions', 'action' => 'add')); ?></li>
+                                </ul>
                             </li>
                         </ul>
                         <ul class="nav navbar-nav navbar-right">
@@ -82,21 +86,15 @@ $cakeVersion = __d('cake_dev', 'CakePHP %s', Configure::version())
                             <li><a href="#">Monthly Report</a></li>
                             <li class="dropdown">
                                     <?php 
-                                        $username = $this->Session->read('user');
-                                        if($username == null && $username =='') :
+                                        if($users_username == null || $users_username =='') :
                                     ?>
                                 <?php echo $this->Html->link(__('Login'), array('controller' => 'users', 'action' => 'login')); ?>
                                     <?php else: ?>
                             <li class="dropdown">
-                                <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false"><?php echo $this->Session->read('user'); ?><span class="caret"></span></a>
+                                <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false"><?php echo $users_username; ?><span class="caret"></span></a>
                                 <ul class="dropdown-menu" role="menu">
-                                    <li><a href="#">Action</a></li>
-                                    <li><a href="#">Another action</a></li>
-                                    <li><a href="#">Something else here</a></li>
-                                    <li class="divider"></li>
-                                    <li><a href="#">Separated link</a></li>
-                                    <li class="divider"></li>
-                                    <li><a href="#">One more separated link</a></li>
+                                    <li><?php echo $this->Html->link(__('Change password'), array('controller' => 'users', 'action' => 'change')); ?></li>
+                                    <li><?php echo $this->Html->link(__('Logout'), array('controller' => 'users', 'action' => 'logout')); ?></li>
                                 </ul>
                             </li>
                                     <?php endif;?>
@@ -130,8 +128,8 @@ $cakeVersion = __d('cake_dev', 'CakePHP %s', Configure::version())
 			</p>
 		</div>-->
         <?php
-            //echo $this->Html->script('jquery.min.js'); 
-            //echo $this->Html->script('bootstrap.min.js');  
+            echo $this->Html->script('jquery.min.js'); 
+            echo $this->Html->script('bootstrap.min.js');  
         ?>
 	</div>
 	<?php // echo $this->element('sql_dump'); ?>
