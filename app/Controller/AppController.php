@@ -36,7 +36,6 @@ class AppController extends Controller {
     
     public function beforeFilter()
     {
-        //$this->_setLanguage();
     	$this->Auth->allow('index', 'view','add', 'edit','delete','forgot');
     	Security::setHash('md5');
     	//$this->Auth->allow("users/add");

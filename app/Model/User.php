@@ -19,12 +19,7 @@ class User extends AppModel {
 		'username' => array(
 			'notEmpty' => array(
 				'rule' => array('notEmpty'),
-				
-				//'message' => 'Your custom message here',
-				//'allowEmpty' => false,
-				//'required' => false,
-				//'last' => false, // Stop validation after this rule
-				//'on' => 'create', // Limit validation to 'create' or 'update' operations
+                                'message' => 'The email is required'
 			),
 			'email' => array(
 				'rule' => array('email'),
@@ -34,11 +29,7 @@ class User extends AppModel {
 		'password' => array(
 			'notEmpty' => array(
 				'rule' => array('notEmpty'),
-				//'message' => 'Your custom message here',
-				//'allowEmpty' => false,
-				//'required' => false,
-				//'last' => false, // Stop validation after this rule
-				//'on' => 'create', // Limit validation to 'create' or 'update' operations
+				'message' => 'The password is required',
 			),
 		),
 		'default_wallet' => array(
@@ -74,7 +65,7 @@ class User extends AppModel {
         public function beforeSave($options = array()) 
         {
             if (isset($this->data[$this->alias]['password'])) {
-                    $this->data[$this->alias]['password'] = AuthComponent::password($this->data[$this->alias]['password']);
+                    $this->data[$this->alias]['password'] = Security::hash($this->data[$this->alias]['password']);
             }
             return true;
         }
