@@ -38,22 +38,12 @@ class AppController extends Controller {
     {
         //$this->_setLanguage();
     	$this->Auth->allow('index', 'view','add', 'edit','delete','forgot');
-    	//Security::setHash('md5');
+    	Security::setHash('md5');
     	//$this->Auth->allow("users/add");
         //$this->Auth->allow("users/login", 'users/add');
         $this->set('userlogin',$this->Auth->user());
         Configure::write('Config.language', $this->Session->read('Config.language'));
     }
-   
-//    function _setLanguage() {
-//        if ($this->Cookie->read('lang') && !$this->Session->check('Config.language')) {
-//            $this->Session->write('Config.language', $this->Cookie->read('lang'));
-//        }
-//        elseif(isset($this->params->params["named"]['language']) && ($this->params->params["named"]['language'] != $this->Session->read('Config.language'))) {
-//            $this->Session->write('Config.language', $this->params->params["named"]['language']);
-//            $this->Cookie->write('lang', $this->params->params["named"]['language'], false, '1 minutes');
-//        }
-//    }
     
 /*
  * check login

@@ -44,6 +44,10 @@ class UsersController extends AppController {
             if($this->request->is('post') && !empty($this->request->data)) {
                 if($this->checkEmail(mysql_real_escape_string($_POST['username']))) {
                     $random_password = $this->generateRandomString();
+                    $this->User->updateAll(
+                            array('password', ),
+                            array('username'=> mysql_real_escape_string($_POST['username']))
+                            );
                     $this->User->username = (mysql_real_escape_string($_POST['username']));
                     $this->User->saveField('password',  AuthComponent::password($random_password));
                     $this->sendEmail($_POST['username'], $random_password);
