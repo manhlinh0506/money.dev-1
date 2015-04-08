@@ -158,7 +158,7 @@ class CategoriesController extends AppController {
         }
         $this->request->allowMethod('post', 'delete');
         $list_transaction = $this->Category->getTransaction($id);
-        if ($this->Category->deleteCategory($list_transaction, $id)) {
+        if ($this->deleteCategory($list_transaction, $id)) {
             $this->Session->setFlash(__('The category has been deleted.'));
         } else {
             $this->Session->setFlash(__('The category could not be deleted. Please, try again.'));
@@ -178,5 +178,34 @@ class CategoriesController extends AppController {
 
         $this->set('transactions', $data);
     }
-
+    
+    /**
+     * deleteCategory method
+     * delete all transactions of category with category id = $id
+     * @throws NotFoundException
+     * @param array $id
+     * @return boolean
+     */
+    public function deleteCategory($list_transaction, $id) {
+        $ds = $this->Category->getDataSource();
+        $ds->begin();
+        if (count($list_transaction) > 0) {
+            try {
+                foreach ($list_transaction as $transaction) {
+                    $this->Category->Transaction->delete($transaction['Transaction']['id']);
+                }
+            } catch (Exception $deleteTransaction) {
+                $ds->rollback();
+                return false;
+            }
+        }
+        try {
+            $this->Category->delete($id);
+            $ds->commit();
+            return true;
+        } catch (Exception $deleteCategory) {
+            $ds->rollback();
+            return false;
+        }
+    }
 }

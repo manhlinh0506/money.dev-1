@@ -22,6 +22,9 @@ class Transaction extends AppModel {
 				//'last' => false, // Stop validation after this rule
 				//'on' => 'create', // Limit validation to 'create' or 'update' operations
 			),
+                        'length' => array(
+                            'rule' => array('maxLength',30)
+                        )
 		),
 		'category_id' => array(
 			'numeric' => array(

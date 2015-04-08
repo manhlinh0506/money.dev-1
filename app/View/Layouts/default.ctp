@@ -110,11 +110,6 @@ $cakeVersion = __d('cake_dev', 'CakePHP %s', Configure::version())
 			<?php echo $this->fetch('content'); ?>
 		</div>
             <footer class='footer'>
-                <div class='row'>
-                    <div class='col-md-12 text-center'>
-                        <p>le manh linh</p>
-                    </div>
-                </div>
             </footer>
 <!--		<div id="footer">
 			<?php // echo $this->Html->link(

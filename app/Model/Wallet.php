@@ -120,48 +120,7 @@ class Wallet extends AppModel {
         return $list_transacton;
     }
 
-    /**
-     * deleteWallet method
-     * define all transactions of categories of wallet with wallet id = $id
-     * @throws NotFoundException
-     * @param string $id
-     * @return array
-     */
-    function deleteAllInfoOfWallet($list_info, $id) 
-    {
-        $ds = $this->getDataSource();
-        $ds->begin();
-        $i = 0;
-        $transation_list = 0;
-        if (count($list_info) > 0) {
-            try {
-                foreach ($list_info as $info) {
-                    if (count($info[$transation_list]) > 1) {
-                        foreach ($info[$transation_list] as $transaction) {
-                            $this->Category->Transaction->delete($transaction['Transaction']['id']);
-                        }
-                    } else {
-                        if (count($info[$transation_list]) > 0) {
-                            $this->Category->Transaction->delete($info[$transation_list][$transation_list]['Transaction']['id']);
-                        }
-                    }
-                    $this->Category->delete($info['Category_id']);
-                    $i++;
-                }
-            } catch (Exception $deleteCategory) {
-                $ds->rollback();
-                return false;
-            }
-        }
-        try {
-            $this->delete($id);
-            $ds->commit();
-            return true;
-        } catch (Exception $deleteWallet) {
-            $ds->rollback();
-            return false;
-        }
-    }
+    
 
     /**
      * getWallet method

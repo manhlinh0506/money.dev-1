@@ -3,19 +3,18 @@
 	<fieldset>
 		<legend><?php echo __('Add Transaction'); ?></legend>
 	<?php
-		echo $this->Form->input('name');
-		echo $this->Form->input('transaction_value');
-		echo $this->Form->input('category_id');
-		echo $this->Form->input('date_of_execution');
+		echo $this->Form->input('name', array('name'=>'name'));
+		echo $this->Form->input('transaction_value', array('name'=>'transaction_value'));
+		echo $this->Form->input('category_id', array('name'=>'category_id','id'=>'category_id'));
+		echo $this->Form->input('date_of_execution', array('name'=>'date_of_execution'));
 	?>
+                <script>
+                    $(document).ready(function(){
+                       $("#category_id").change(function(){
+                          alert('gin'); 
+                       });
+                    });
+                </script>
 	</fieldset>
-<?php echo $this->Form->end(__('Submit')); ?>
-</div>
-<div class="actions">
-	<h3><?php echo __('Actions'); ?></h3>
-	<ul>
-		<li><?php echo $this->Html->link(__('List Transactions'), array('action' => 'index')); ?></li>
-		<li><?php echo $this->Html->link(__('List Categories'), array('controller' => 'categories', 'action' => 'index')); ?> </li>
-		<li><?php echo $this->Html->link(__('New Category'), array('controller' => 'categories', 'action' => 'add')); ?> </li>
-	</ul>
+<?php echo $this->Form->end(__('Add')); ?>
 </div>

@@ -126,7 +126,7 @@ class WalletsController extends AppController {
         }
         $this->request->allowMethod('post', 'delete');
         $list_delete = $this->Wallet->deleteWallet($id);
-        if ($this->Wallet->deleteAllInfoOfWallet($list_delete, $id)) {
+        if ($this->deleteAllInfoOfWallet($list_delete, $id)) {
             $this->Session->setFlash(__('The wallet has been deleted.'));
         } else {
             $this->Session->setFlash(__('The wallet could not be deleted. Please, try again.'));
@@ -228,4 +228,46 @@ class WalletsController extends AppController {
         $this->set(compact('currencies', 'wallets'));
     }
 
+    /**
+     * deleteWallet method
+     * define all transactions of categories of wallet with wallet id = $id
+     * @throws NotFoundException
+     * @param string $id
+     * @return array
+     */
+    function deleteAllInfoOfWallet($list_info, $id) 
+    {
+        $ds = $this->Wallet->getDataSource();
+        $ds->begin();
+        $i = 0;
+        $transation_list = 0;
+        if (count($list_info) > 0) {
+            try {
+                foreach ($list_info as $info) {
+                    if (count($info[$transation_list]) > 1) {
+                        foreach ($info[$transation_list] as $transaction) {
+                            $this->Wallet->Category->Transaction->delete($transaction['Transaction']['id']);
+                        }
+                    } else {
+                        if (count($info[$transation_list]) > 0) {
+                            $this->Wallet->Category->Transaction->delete($info[$transation_list][$transation_list]['Transaction']['id']);
+                        }
+                    }
+                    $this->Wallet->Category->delete($info['Category_id']);
+                    $i++;
+                }
+            } catch (Exception $deleteCategory) {
+                $ds->rollback();
+                return false;
+            }
+        }
+        try {
+            $this->Wallet->delete($id);
+            $ds->commit();
+            return true;
+        } catch (Exception $deleteWallet) {
+            $ds->rollback();
+            return false;
+        }
+    }
 }
