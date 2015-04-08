@@ -10,6 +10,10 @@ App::uses('AppController', 'Controller');
  */
 class CategoriesController extends AppController {
 
+    // delete flag of category
+    const DELETE_FLAG_FALSE = 0;
+    // default special_id
+    const SPECIAL_ID = null;
     /**
      * Components
      *
@@ -23,7 +27,15 @@ class CategoriesController extends AppController {
      * @return void
      */
     public function index() {
-        $this->Category->recursive = 0;
+        $ids = $this->Category->Wallet->getAllWallet($this->Auth->user('id'));
+        $arr = array();
+        $i = 0;
+        foreach ($ids as $id) {
+            $arr[$i] = $id['wallets']['id'];
+            $i++;
+        }
+        $this->Paginator->settings = array(
+            'conditions' => array('Category.wallet_id' => $arr));
         $this->set('categories', $this->Paginator->paginate());
     }
 
@@ -34,13 +46,13 @@ class CategoriesController extends AppController {
      * @param string $id
      * @return void
      */
-    public function view($id = null) {
-        if (!$this->Category->exists($id)) {
-            throw new NotFoundException(__('Invalid category'));
-        }
-        $options = array('conditions' => array('Category.' . $this->Category->primaryKey => $id));
-        $this->set('category', $this->Category->find('first', $options));
-    }
+//    public function view($id = null) {
+//        if (!$this->Category->exists($id)) {
+//            throw new NotFoundException(__('Invalid category'));
+//        }
+//        $options = array('conditions' => array('Category.' . $this->Category->primaryKey => $id));
+//        $this->set('category', $this->Category->find('first', $options));
+//    }
 
     /**
      * add method
@@ -50,14 +62,32 @@ class CategoriesController extends AppController {
     public function add() {
         if ($this->request->is('post')) {
             $this->Category->create();
-            if ($this->Category->save($this->request->data)) {
-                $this->Session->setFlash(__('The category has been saved.'));
-                return $this->redirect(array('action' => 'index'));
-            } else {
-                $this->Session->setFlash(__('The category could not be saved. Please, try again.'));
+            $this->Category->set($this->request->data);
+            if ($this->Category->validates($this->Category->validate)) {
+                $category = array(
+                    'name' => $this->request->data('name'),
+                    'created' => date('Y-m-d H:i:s'),
+                    'modified' => date('Y-m-d H:i:s'),
+                    'delete_flag' => self::DELETE_FLAG_FALSE,
+                    'wallet_id' => $this->request->data('wallet_id'),
+                    'typename_id' => $this->request->data('typename_id')
+                );
+                if ($this->request->data('published') == 1) {
+                    $category['special_id'] = $this->request->data('special_id');
+                } else {
+                    $category['special_id'] = self::SPECIAL_ID;
+                }
+                if ($this->Category->save($category)) {
+                    $this->Session->setFlash(__('The category has been saved.'));
+                    return $this->redirect(array('action' => 'index'));
+                } else {
+                    $this->Session->setFlash(__('The category could not be saved. Please, try again.'));
+                }
             }
         }
-        $wallets = $this->Category->Wallet->find('list');
+        $wallets = $this->Category->Wallet->find('list', array(
+            'conditions' => array(
+                'Wallet.user_id' => $this->Auth->user('id'))));
         $typenames = $this->Category->Typename->find('list');
         $specials = $this->Category->Special->find('list');
         $this->set(compact('wallets', 'typenames', 'specials'));
@@ -75,17 +105,40 @@ class CategoriesController extends AppController {
             throw new NotFoundException(__('Invalid category'));
         }
         if ($this->request->is(array('post', 'put'))) {
-            if ($this->Category->save($this->request->data)) {
-                $this->Session->setFlash(__('The category has been saved.'));
-                return $this->redirect(array('action' => 'index'));
-            } else {
-                $this->Session->setFlash(__('The category could not be saved. Please, try again.'));
+
+            $this->Category->set($this->request->data);
+            if ($this->Category->validates($this->Category->validate)) {
+                $updateCategory = false;
+                if ($this->request->data('published') == 1) {
+                    $updateCategory = $this->Category->updateAll(
+                            array('Category.name' => "'" . $this->request->data('name') . "'",
+                        'Category.modified' => "'" . date('Y-m-d H:i:s') . "'",
+                        'Category.wallet_id' => $this->request->data('wallet_id'),
+                        'Category.typename_id' => $this->request->data('typename_id'),
+                        'Category.special_id' => $this->request->data('special_id')), array('Category.id' => $this->request->data('id'))
+                    );
+                } else {
+                    $updateCategory = $this->Category->updateAll(
+                            array('Category.name' => "'" . $this->request->data('name') . "'",
+                        'Category.modified' => "'" . date('Y-m-d H:i:s') . "'",
+                        'Category.wallet_id' => $this->request->data('wallet_id'),
+                        'Category.typename_id' => $this->request->data('typename_id'),
+                        'Category.special_id' => self::SPECIAL_ID), array('Category.id' => $this->request->data('id'))
+                    );
+                }
+                if ($updateCategory) {
+                    $this->Session->setFlash(__('The category has been saved.'));
+                    return $this->redirect(array('action' => 'index'));
+                } else {
+                    $this->Session->setFlash(__('The category could not be saved. Please, try again.'));
+                }
             }
         } else {
             $options = array('conditions' => array('Category.' . $this->Category->primaryKey => $id));
             $this->request->data = $this->Category->find('first', $options);
         }
-        $wallets = $this->Category->Wallet->find('list');
+
+        $wallets = $this->Category->Wallet->find('list', array('conditions' => array('Wallet.user_id' => $this->Auth->user('id'))));
         $typenames = $this->Category->Typename->find('list');
         $specials = $this->Category->Special->find('list');
         $this->set(compact('wallets', 'typenames', 'specials'));
@@ -113,5 +166,17 @@ class CategoriesController extends AppController {
         return $this->redirect(array('action' => 'index'));
     }
 
-    
+    public function show($id = null) {
+        $this->Category->id = $id;
+        if (!$this->Category->exists()) {
+            throw new NotFoundException(__('Invalid category'));
+        }
+        $this->Paginator->settings = $this->paginate;
+        $data = $this->Paginator->paginate(
+                'Transaction', array('Transaction.category_id' => $id)
+        );
+
+        $this->set('transactions', $data);
+    }
+
 }

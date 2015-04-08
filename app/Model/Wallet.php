@@ -101,7 +101,8 @@ class Wallet extends AppModel {
      * @param string $id
      * @return array
      */
-    public function deleteWallet($id) {
+    public function deleteWallet($id) 
+    {
         $list_categories = $this->Category->find('all', array(
             'fields' => array('Category.id'),
             'conditions' => array('wallet_id' => $id)
@@ -126,31 +127,32 @@ class Wallet extends AppModel {
      * @param string $id
      * @return array
      */
-    function deleteAllInfoOfWallet($list_info, $id) {
+    function deleteAllInfoOfWallet($list_info, $id) 
+    {
         $ds = $this->getDataSource();
         $ds->begin();
         $i = 0;
         $transation_list = 0;
-        try {
         if (count($list_info) > 0) {
-            foreach ($list_info as $info) {
-                if (count($info[$transation_list]) > 1) {
-                    foreach ($info[$transation_list] as $transaction) {
+            try {
+                foreach ($list_info as $info) {
+                    if (count($info[$transation_list]) > 1) {
+                        foreach ($info[$transation_list] as $transaction) {
                             $this->Category->Transaction->delete($transaction['Transaction']['id']);
+                        }
+                    } else {
+                        if (count($info[$transation_list]) > 0) {
+                            $this->Category->Transaction->delete($info[$transation_list][$transation_list]['Transaction']['id']);
+                        }
                     }
-                } else {
-                    if (count($info[$transation_list]) > 0) {
-                            $this->Category->Transaction->delete($info[$transation_list][$transation_list]['Transaction']['id']);   
-                    }
-                }              
                     $this->Category->delete($info['Category_id']);
-                $i++;
+                    $i++;
+                }
+            } catch (Exception $deleteCategory) {
+                $ds->rollback();
+                return false;
             }
         }
-        } catch (Exception $deleteCategory) {
-                    $ds->rollback();
-                    return false;
-                }
         try {
             $this->delete($id);
             $ds->commit();
@@ -168,8 +170,18 @@ class Wallet extends AppModel {
      * @param  $id
      * @return array
      */
-    public function getWallet($id) {
+    public function getWallet($id)
+    {
         return $this->find('all', array('conditions' => array('Wallet.user_id' => $id)));
     }
 
+    /**
+     * getWallet method
+     * get all wallet ids of user
+     */
+    public function getAllWallet($id)
+    {
+        $ids = $this->query('select id from wallets where user_id ='.$id);
+        return $ids;
+    }
 }
