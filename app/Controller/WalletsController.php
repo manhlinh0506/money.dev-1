@@ -23,6 +23,11 @@ class WalletsController extends AppController {
      * @return void
      */
     public function index() {
+        $current_wallet = $this->Wallet->User->find('first', array(
+            'fields' => 'current_wallet',
+            'conditions' => array('User.id' => $this->Auth->user('id'))
+        ));
+        $this->Session->write('Current_Wallet', $current_wallet['User']['current_wallet']);
         $this->Paginator->settings = array(
             'conditions' => array('Wallet.user_id' => $this->Auth->user('id')));
         $this->set('wallets', $this->Paginator->paginate('Wallet'));
@@ -145,7 +150,6 @@ class WalletsController extends AppController {
         );
         if ($changeWallet) {
             $userInfo = $this->Wallet->User->getUserInfo($this->Auth->user('id'));
-            $this->Session->write('Current_Wallet', $userInfo['User']['current_wallet']);
             $this->Session->setFlash(__('The current wallet is changed.'));
             return $this->redirect(array('action' => 'index'));
         } else {
@@ -153,23 +157,74 @@ class WalletsController extends AppController {
         }
     }
 
-    public function tranfer($id = null) {
+    /**
+     * tranfer method
+     *
+     * @throws NotFoundException
+     * @param  $id
+     * @return 
+     */
+    public function transfer($id = null) {
         if (!$this->Wallet->exists($id)) {
             throw new NotFoundException(__('Invalid wallet'));
         }
         if ($this->request->is(array('post', 'put'))) {
-            if ($this->Category->save($this->request->data)) {
-                $this->Session->setFlash(__('The category has been saved.'));
+            $current_currency = $this->Wallet->find('first', array(
+                'conditions' => array(
+                    'Wallet.id' => $id,
+                )
+                    )
+            );
+            $current_currency['Currency']['rate'];
+            $tranfer_currency = $this->Wallet->find('first', array(
+                'conditions' => array(
+                    'Wallet.id' => $this->request->data('Wallet')['To'],
+                )
+                    )
+            );
+            $ds = $this->Wallet->getDataSource();
+            $ds->begin();
+            try {
+                if ($current_currency['Currency']['name'] == $tranfer_currency['Currency']['name']) {
+                    $tranfer_money = $this->request->data('balance');
+                    $this->Wallet->updateAll(array(
+                        'Wallet.modified' => "'" . date('Y-m-d H:i:s') . "'",
+                        'Wallet.balance' => $current_currency['Wallet']['balance'] - $tranfer_money), array('Wallet.id' => $id)
+                    );
+                    $this->Wallet->updateAll(array(
+                        'Wallet.modified' => "'" . date('Y-m-d H:i:s') . "'",
+                        'Wallet.balance' => $tranfer_currency['Wallet']['balance'] + $tranfer_money), array('Wallet.id' => $this->request->data('Wallet')['To'])
+                    );
+                } else {
+                    $tranfer_money = $this->request->data('balance') / $current_currency['Currency']['rate'] * $tranfer_currency['Currency']['rate'];
+                    $this->Wallet->updateAll(array(
+                        'Wallet.modified' => "'" . date('Y-m-d H:i:s') . "'",
+                        'Wallet.balance' => $current_currency['Wallet']['balance'] - $this->request->data('balance')), array('Wallet.id' => $id)
+                    );
+                    $this->Wallet->updateAll(array(
+                        'Wallet.modified' => "'" . date('Y-m-d H:i:s') . "'",
+                        'Wallet.balance' => $tranfer_currency['Wallet']['balance'] + $tranfer_money), array('Wallet.id' => $this->request->data('Wallet')['To'])
+                    );
+                }
+                $ds->commit();
+                $this->Session->setFlash(__('The transaction is successful.'));
                 return $this->redirect(array('action' => 'index'));
-            } else {
-                $this->Session->setFlash(__('The category could not be saved. Please, try again.'));
+            } catch (Exception $e) {
+                $ds->rollback();
+                $this->Session->setFlash(__('The transaction is error. Please, try again.'));
             }
         } else {
             $options = array('conditions' => array('Wallet.' . $this->Wallet->primaryKey => $id));
             $this->request->data = $this->Wallet->find('first', $options);
         }
         $currencies = $this->Wallet->Currency->find('list');
-        $wallets = $this->Wallet->find('list', array('conditions' => array('Wallet.user_id' => $id)));
+        $wallets = $this->Wallet->find('list', array(
+            'conditions' => array(
+                'Wallet.user_id' => $this->Auth->user('id'),
+                'Wallet.id !=' => $id,
+            )
+                )
+        );
         $this->set(compact('currencies', 'wallets'));
     }
 

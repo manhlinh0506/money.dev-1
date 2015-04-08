@@ -43,7 +43,6 @@ class AppController extends Controller {
         $this->set('logged_in', $this->_isLogin());
         $this->set('users_userid', $this->_usersUserID());
         $this->set('users_username', $this->_usersUsername());
-        $this->Session->write('Current_Wallet', $this->_usersCurrentWallet());
     }
     
 /*
@@ -75,15 +74,5 @@ class AppController extends Controller {
     if($this->Auth->user())
         $users_username = $this->Auth->user("username");
     return $users_username;
-  }
-  
-  /**
-   * check current_wallet
-   */ 
-  function _usersCurrentWallet(){
-    $users_currentWallet = null;
-    if($this->Auth->user())
-        $users_currentWallet = $this->Auth->user("current_wallet");
-    return $users_currentWallet;
   }
 }
