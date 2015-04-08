@@ -84,7 +84,7 @@ class UsersController extends AppController {
             $this->User->set($this->request->data);
             if ($this->User->validates($this->User->validate)) {
                 if ($this->Auth->login()) {
-                    $this->redirect('/wallets/');
+                    $this->redirect($this->Auth->redirect());
                 } else {
                     $error = 'Username or password is wrong';
                     $this->Session->setFlash($error);

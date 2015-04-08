@@ -1,39 +1,31 @@
 <div class="categories form">
 <?php echo $this->Form->create('Category'); ?>
-    <fieldset>
-        <legend><?php echo __('Edit Category'); ?></legend>
+	<fieldset>
+		<legend><?php echo __('Edit Category'); ?></legend>
 	<?php
-		echo $this->Form->input('id', array('name'=>'id'));
-		echo $this->Form->input('name', array('name'=>'name'));
-		echo $this->Form->input('wallet_id', array('name'=>'wallet_id'));
-		echo $this->Form->input('typename_id', array('name'=>'typename_id'));
-                echo $this->Form->label('Use specials type:');
-                if($this->request->data('Category')['special_id'] == null) {
-                    echo $this->Form->checkbox('published', 
-                        array('name'=>'published','id'=>'check', 
-                            'onchange'=>'checkCheckbox()','checked'=>''));
-                        echo $this->Form->input('special_id', 
-                            array('name'=>'special_id','id'=>'special_id','label'=>false,'style'=>'display:none'));
-                } else {
-                        echo $this->Form->checkbox('published', 
-                        array('name'=>'published','id'=>'check', 
-                            'onchange'=>'checkCheckbox()','checked'=>'checked'));
-                        echo $this->Form->input('special_id', 
-                        array('name'=>'special_id','id'=>'special_id','label'=>false));
-                }
-                
+		echo $this->Form->input('id');
+		echo $this->Form->input('name');
+		echo $this->Form->input('delete_flag');
+		echo $this->Form->input('wallet_id');
+		echo $this->Form->input('typename_id');
+		echo $this->Form->input('special_id');
 	?>
-    </fieldset>
-    <script>
-        function checkCheckbox() {
-            var check = document.getElementById('check');
-            if (check.checked == true) {
-                document.getElementById('special_id').style.display = 'block';
-            } else {
-                document.getElementById('special_id').style.display = 'none';
-            }
-        }
-    </script>
+	</fieldset>
 <?php echo $this->Form->end(__('Submit')); ?>
 </div>
+<div class="actions">
+	<h3><?php echo __('Actions'); ?></h3>
+	<ul>
 
+		<li><?php echo $this->Form->postLink(__('Delete'), array('action' => 'delete', $this->Form->value('Category.id')), array(), __('Are you sure you want to delete # %s?', $this->Form->value('Category.id'))); ?></li>
+		<li><?php echo $this->Html->link(__('List Categories'), array('action' => 'index')); ?></li>
+		<li><?php echo $this->Html->link(__('List Wallets'), array('controller' => 'wallets', 'action' => 'index')); ?> </li>
+		<li><?php echo $this->Html->link(__('New Wallet'), array('controller' => 'wallets', 'action' => 'add')); ?> </li>
+		<li><?php echo $this->Html->link(__('List Typenames'), array('controller' => 'typenames', 'action' => 'index')); ?> </li>
+		<li><?php echo $this->Html->link(__('New Typename'), array('controller' => 'typenames', 'action' => 'add')); ?> </li>
+		<li><?php echo $this->Html->link(__('List Specials'), array('controller' => 'specials', 'action' => 'index')); ?> </li>
+		<li><?php echo $this->Html->link(__('New Special'), array('controller' => 'specials', 'action' => 'add')); ?> </li>
+		<li><?php echo $this->Html->link(__('List Transactions'), array('controller' => 'transactions', 'action' => 'index')); ?> </li>
+		<li><?php echo $this->Html->link(__('New Transaction'), array('controller' => 'transactions', 'action' => 'add')); ?> </li>
+	</ul>
+</div>

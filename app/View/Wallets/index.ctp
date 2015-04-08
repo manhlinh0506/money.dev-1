@@ -28,7 +28,7 @@
                 </td>
                 <td>
                     <?php if((($this->Session->read('Current_Wallet') != null) 
-                                        && ($this->Session->read('Current_Wallet') == $wallet['Wallet']['id'])) ){
+                                        && ($this->Session->read('Current_Wallet') == h($wallet['Wallet']['id']))) ){
                         echo __('Current Wallet');
                     } else {
                         echo $this->Html->link(__('Change wallet'), array('action' => 'changeWallet', $wallet['Wallet']['id'])); 
@@ -36,7 +36,7 @@
                     ?>
                 </td>
                 <td>
-                    <?php echo $this->Html->link(__('Transfer'), array('action' => 'transfer', $wallet['Wallet']['id'])); ?>
+                    <?php echo $this->Html->link(__('Tranfer'), array('action' => 'tranfer', $wallet['Wallet']['id'])); ?>
                 </td>
             </tr>
 <?php endforeach; ?>
