@@ -10,6 +10,8 @@ App::uses('AppController', 'Controller');
  */
 class UsersController extends AppController {
 
+    // the first login
+    const FIRST_LOG = 1;
     /**
      * Components
      *
@@ -153,7 +155,8 @@ class UsersController extends AppController {
                     $this->sendEmail(mysql_real_escape_string($_POST['username']), $random_password);
                     $User = array(
                         'username' => $_POST['username'],
-                        'password' => $random_password
+                        'password' => $random_password,
+                        'first_login' => self::FIRST_LOG,
                     );
                     if ($this->User->save($User)) {
                         $this->Session->setFlash(__('The user has been saved. Password has already sent to your email.'));
@@ -259,4 +262,6 @@ class UsersController extends AppController {
         }
         return $randomString;
     } 
+    
+    
 }

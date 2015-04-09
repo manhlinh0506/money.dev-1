@@ -27,6 +27,10 @@ class CategoriesController extends AppController {
      * @return void
      */
     public function index() {
+        if (!(count($this->Category->Wallet->User->checkWallet($this->Auth->user('id')))>0)) {
+            $this->Session->setFlash('Your need to create wallet first.');
+            $this->redirect('/wallets/add');
+        }
         $ids = $this->Category->Wallet->getAllWallet($this->Auth->user('id'));
         $arr = array();
         $i = 0;
@@ -60,6 +64,10 @@ class CategoriesController extends AppController {
      * @return void
      */
     public function add() {
+        if (!(count($this->Category->Wallet->User->checkWallet($this->Auth->user('id')))>0)) {
+            $this->Session->setFlash('Your need to create wallet first.');
+            $this->redirect('/wallets/add');
+        }
         if ($this->request->is('post')) {
             $this->Category->create();
             $this->Category->set($this->request->data);
@@ -101,6 +109,10 @@ class CategoriesController extends AppController {
      * @return void
      */
     public function edit($id = null) {
+        if (!(count($this->Category->Wallet->User->checkWallet($this->Auth->user('id')))>0)) {
+            $this->Session->setFlash('Your need to create wallet first.');
+            $this->redirect('/wallets/add');
+        }
         if (!$this->Category->exists($id)) {
             throw new NotFoundException(__('Invalid category'));
         }
@@ -152,6 +164,10 @@ class CategoriesController extends AppController {
      * @return void
      */
     public function delete($id = null) {
+        if (!(count($this->Category->Wallet->User->checkWallet($this->Auth->user('id')))>0)) {
+            $this->Session->setFlash('Your need to create wallet first.');
+            $this->redirect('/wallets/add');
+        }
         $this->Category->id = $id;
         if (!$this->Category->exists()) {
             throw new NotFoundException(__('Invalid category'));
@@ -167,6 +183,10 @@ class CategoriesController extends AppController {
     }
 
     public function show($id = null) {
+        if(!$this->Category->Wallet->User->checkWallet($this->Auth->user('id'))) {
+            $this->Session->setFlash('Your need to create wallet first.');
+            $this->redirect('/wallets/');
+        }
         $this->Category->id = $id;
         if (!$this->Category->exists()) {
             throw new NotFoundException(__('Invalid category'));

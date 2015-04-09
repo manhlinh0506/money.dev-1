@@ -3,6 +3,7 @@
 	<table cellpadding="0" cellspacing="0">
 	<thead>
 	<tr>
+                        <th><?php echo $this->Paginator->sort('id'); ?></th>
 			<th><?php echo $this->Paginator->sort('name'); ?></th>
 			<th><?php echo $this->Paginator->sort('transaction_value'); ?></th>
 			<th><?php echo $this->Paginator->sort('created'); ?></th>
@@ -16,6 +17,7 @@
 	<tbody>
 	<?php foreach ($transactions as $transaction): ?>
 	<tr>
+                <td><?php echo h($transaction['Transaction']['id']); ?>&nbsp;</td>
 		<td><?php echo h($transaction['Transaction']['name']); ?>&nbsp;</td>
 		<td><?php echo h($transaction['Transaction']['transaction_value']); ?>&nbsp;</td>
 		<td><?php echo h($transaction['Transaction']['created']); ?>&nbsp;</td>

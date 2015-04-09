@@ -23,6 +23,10 @@ class WalletsController extends AppController {
      * @return void
      */
     public function index() {
+        if (!(count($this->Wallet->User->checkWallet($this->Auth->user('id'))) > 0)) {
+            $this->Session->setFlash('Your need to create wallet first.');
+            $this->redirect('/wallets/add');
+        }
         $current_wallet = $this->Wallet->User->find('first', array(
             'fields' => 'current_wallet',
             'conditions' => array('User.id' => $this->Auth->user('id'))
@@ -65,7 +69,11 @@ class WalletsController extends AppController {
                     'user_id' => $this->Auth->user('id'),
                     'balance' => $this->request->data('balance')
                 );
+
                 if ($this->Wallet->save($wallet)) {
+                    if (count($this->Wallet->User->checkWallet($this->Auth->user('id')) == 1)) {
+                        $this->changeWallet($this->Wallet->getLastInsertID());
+                    }
                     $this->Session->setFlash(__('The wallet has been saved.'));
                     return $this->redirect(array('action' => 'index'));
                 } else {
@@ -85,6 +93,10 @@ class WalletsController extends AppController {
      * @return void
      */
     public function edit($id = null) {
+        if (!(count($this->Wallet->User->checkWallet($this->Auth->user('id'))) > 0)) {
+            $this->Session->setFlash('Your need to create wallet first.');
+            $this->redirect('/wallets/add');
+        }
         if (!$this->Wallet->exists($id)) {
             throw new NotFoundException(__('Invalid wallet'));
         }
@@ -120,6 +132,10 @@ class WalletsController extends AppController {
      * @return void
      */
     public function delete($id = null) {
+        if (!(count($this->Wallet->User->checkWallet($this->Auth->user('id'))) > 0)) {
+            $this->Session->setFlash('Your need to create wallet first.');
+            $this->redirect('/wallets/add');
+        }
         $this->Wallet->id = $id;
         if (!$this->Wallet->exists()) {
             throw new NotFoundException(__('Invalid wallet'));
@@ -142,6 +158,10 @@ class WalletsController extends AppController {
      * @return 
      */
     public function changeWallet($id = null) {
+        if (!(count($this->Wallet->User->checkWallet($this->Auth->user('id'))) > 0)) {
+            $this->Session->setFlash('Your need to create wallet first.');
+            $this->redirect('/wallets/add');
+        }
         if (!$this->Wallet->exists($id)) {
             throw new NotFoundException(__('Invalid wallet'));
         }
@@ -165,6 +185,10 @@ class WalletsController extends AppController {
      * @return 
      */
     public function transfer($id = null) {
+        if (!(count($this->Wallet->User->checkWallet($this->Auth->user('id'))) > 0)) {
+            $this->Session->setFlash('Your need to create wallet first.');
+            $this->redirect('/wallets/add');
+        }
         if (!$this->Wallet->exists($id)) {
             throw new NotFoundException(__('Invalid wallet'));
         }
@@ -235,8 +259,7 @@ class WalletsController extends AppController {
      * @param string $id
      * @return array
      */
-    function deleteAllInfoOfWallet($list_info, $id) 
-    {
+    function deleteAllInfoOfWallet($list_info, $id) {
         $ds = $this->Wallet->getDataSource();
         $ds->begin();
         $i = 0;
@@ -270,4 +293,5 @@ class WalletsController extends AppController {
             return false;
         }
     }
+
 }

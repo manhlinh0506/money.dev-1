@@ -25,6 +25,8 @@ $cakeVersion = __d('cake_dev', 'CakePHP %s', Configure::version())
             echo $this->Html->css('bootstrap.css');
             echo $this->Html->css('bootstrap-theme.min.css');
             echo $this->Html->css('styles.css');
+            echo $this->Html->script('jquery.min.js'); 
+
           ?>
 	<title>
 		<?php echo $cakeDescription ?>:
@@ -109,8 +111,7 @@ $cakeVersion = __d('cake_dev', 'CakePHP %s', Configure::version())
 
 			<?php echo $this->fetch('content'); ?>
 		</div>
-            <footer class='footer'>
-            </footer>
+            <footer class='footer' style = "height: 0px"></footer>
 <!--		<div id="footer">
 			<?php // echo $this->Html->link(
 //					$this->Html->image('cake.power.gif', array('alt' => $cakeDescription, 'border' => '0')),
@@ -123,7 +124,6 @@ $cakeVersion = __d('cake_dev', 'CakePHP %s', Configure::version())
 			</p>
 		</div>-->
         <?php
-            echo $this->Html->script('jquery.min.js'); 
             echo $this->Html->script('bootstrap.min.js');  
         ?>
 	</div>
