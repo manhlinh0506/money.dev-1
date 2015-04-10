@@ -143,7 +143,7 @@ class TransactionsController extends AppController {
             $special = $this->Transaction->checkSpecial($this->request->data('category_id'));
             $datetime = $this->request->data('Transaction')['date_of_execution'];
             $updateTransaction = false;
-            $datetime = "'".$datetime['year'] . '-' . $datetime['month'] . '-' . $datetime['day']."'";
+            $datetime = "'" . $datetime['year'] . '-' . $datetime['month'] . '-' . $datetime['day'] . "'";
             if ($special == null) {
                 $updateTransaction = $this->Transaction->updateAll(
                         array('name' => "'" . $this->request->data('name') . "'",
@@ -169,7 +169,7 @@ class TransactionsController extends AppController {
                         'transaction_value' => $this->request->data('transaction_value'),
                         'modified' => "'" . date('Y-m-d H:i:s') . "'",
                         'category_id' => $this->request->data('category_id'),
-                        'date_of_execution' =>  $datetime,
+                        'date_of_execution' => $datetime,
                         'parent_transaction' => $this->request->data('loan')), array('Transaction.id' => $this->request->data('id'))
                     );
                 }

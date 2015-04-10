@@ -12,7 +12,6 @@ App::uses('AppModel', 'Model');
 class User extends AppModel {
 
     public $name = 'User';
-    
 
     /**
      * Validation rules
@@ -39,36 +38,26 @@ class User extends AppModel {
         'default_wallet' => array(
             'numeric' => array(
                 'rule' => array('numeric'),
-            //'message' => 'Your custom message here',
-            //'allowEmpty' => false,
-            //'required' => false,
-            //'last' => false, // Stop validation after this rule
-            //'on' => 'create', // Limit validation to 'create' or 'update' operations
             ),
         ),
         'current_wallet' => array(
             'numeric' => array(
                 'rule' => array('numeric'),
-            //'message' => 'Your custom message here',
-            //'allowEmpty' => false,
-            //'required' => false,
-            //'last' => false, // Stop validation after this rule
-            //'on' => 'create', // Limit validation to 'create' or 'update' operations
             ),
         ),
-        'old_password'   => array(
-          'notEmpty' => array(
-              'rule' => array('notEmpty'),
-               'message' => 'The password is required'
-          )
-      ),
+        'old_password' => array(
+            'notEmpty' => array(
+                'rule' => array('notEmpty'),
+                'message' => 'The password is required'
+            )
+        ),
         'new_password' => array(
             'notEmpty' => array(
                 'rule' => array('notEmpty'),
                 'message' => 'The new password is required'
             ),
             'between' => array(
-                'rule' => array('between',8,20),
+                'rule' => array('between', 8, 20),
                 'message' => 'Your new password must be between 8 and 20 characters.'
             ),
             'type' => array(
@@ -82,7 +71,7 @@ class User extends AppModel {
                 'message' => 'The new password is required'
             ),
             'between' => array(
-                'rule' => array('between',8,20),
+                'rule' => array('between', 8, 20),
                 'message' => 'Your confirm password must be between 8 and 20 characters.'
             ),
             'type' => array(
@@ -156,8 +145,7 @@ class User extends AppModel {
     public function compare_password() {
         return $this->data[$this->alias]['new_password'] === $this->data[$this->alias]['cf_password'];
     }
-    
-    
+
     /**
      * check_password action
      * return true
@@ -167,26 +155,39 @@ class User extends AppModel {
         $user = $this->find('count', array(
             'conditions' => array(
                 'User.username' => $username,
-                'password' => AuthComponent::password($old_password) )
-            )
+                'password' => AuthComponent::password($old_password))
+                )
         );
-        if($user > 0) return true;
-        else return false;
+        if ($user > 0)
+            return true;
+        else
+            return false;
     }
-    
+
+    /**
+     * getUserInfo action
+     * return user_info
+     * 
+     */
     public function getUserInfo($id) {
-        $userInfo =  $this->find('first', array(
-            'fields' => array('default_wallet','current_wallet'),
+        $userInfo = $this->find('first', array(
+            'fields' => array('default_wallet', 'current_wallet'),
             'conditions' => array('User.id' => $id)
-            )
+                )
         );
         return $userInfo;
     }
-    
-    public function checkWallet($id)
-    {
-        $wallet = $this->Wallet->find('all', array('conditions'=>array('Wallet.user_id'=>$id)));
+
+    /**
+     * checkWallet action
+     * check wallet of user
+     * 
+     */
+    public function checkWallet($id) {
+        $wallet = $this->Wallet->find('all', array('conditions' => array('Wallet.user_id' => $id)));
         return $wallet;
     }
+
 }
+
 ?>

@@ -34,21 +34,6 @@ class WalletsController extends AppController {
     }
 
     /**
-     * view method
-     *
-     * @throws NotFoundException
-     * @param string $id
-     * @return void
-     */
-//    public function view($id = null) {
-//        if (!$this->Wallet->exists($id)) {
-//            throw new NotFoundException(__('Invalid wallet'));
-//        }
-//        $options = array('conditions' => array('Wallet.' . $this->Wallet->primaryKey => $id));
-//        $this->set('wallet', $this->Wallet->find('first', $options));
-//    }
-
-    /**
      * add method
      *
      * @return void

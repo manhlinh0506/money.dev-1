@@ -32,6 +32,11 @@ class UsersController extends AppController {
         $this->set('users', $this->Paginator->paginate());
     }
 
+    /**
+     * beforeFilter method
+     *
+     * @return void
+     */
     public function beforeFilter() {
         parent::beforeFilter();
         $this->Auth->allow('add', 'forgot');

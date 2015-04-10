@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Application level Controller
  *
@@ -18,7 +19,6 @@
  * @since         CakePHP(tm) v 0.2.9
  * @license       http://www.opensource.org/licenses/mit-license.php MIT License
  */
-
 App::uses('Controller', 'Controller');
 
 /**
@@ -31,48 +31,50 @@ App::uses('Controller', 'Controller');
  * @link		http://book.cakephp.org/2.0/en/controllers.html#the-app-controller
  */
 class AppController extends Controller {
-    public $helpers = array('Html','Form');
+
+    public $helpers = array('Html', 'Form');
     public $components = array('DebugKit.Toolbar', 'Session', 'Auth' => array(
             'loginRedirect' => array('controller' => 'wallets', 'action' => 'add'),
             'logoutRedirect' => array('controller' => 'users', 'action' => 'login')
-        ) , 'Email');
-    
-    public function beforeFilter()
-    {
+        ), 'Email');
+
+    public function beforeFilter() {
         Configure::write('Config.language', $this->Session->read('Config.language'));
         $this->set('logged_in', $this->_isLogin());
         $this->set('users_userid', $this->_usersUserID());
         $this->set('users_username', $this->_usersUsername());
     }
-    
-/*
- * check login
- */    
-    function _isLogin(){
-    $login = false;
-    if($this->Auth->user()){
-        $login = true;
+
+    /*
+     * check login
+     */
+
+    function _isLogin() {
+        $login = false;
+        if ($this->Auth->user()) {
+            $login = true;
+        }
+        return $login;
     }
-    return $login;
-  }
-  
-   /**
-   * check userID
-   */ 
-  function _usersUserID(){
-    $users_userid = null;
-    if($this->Auth->user())
-        $users_userid = $this->Auth->user("id");
-    return $users_userid;
-  }
-  
-  /**
-   * check username
-   */ 
-  function _usersUsername(){
-    $users_username = null;
-    if($this->Auth->user())
-        $users_username = $this->Auth->user("username");
-    return $users_username;
-  }
+
+    /**
+     * check userID
+     */
+    function _usersUserID() {
+        $users_userid = null;
+        if ($this->Auth->user())
+            $users_userid = $this->Auth->user("id");
+        return $users_userid;
+    }
+
+    /**
+     * check username
+     */
+    function _usersUsername() {
+        $users_username = null;
+        if ($this->Auth->user())
+            $users_username = $this->Auth->user("username");
+        return $users_username;
+    }
+
 }

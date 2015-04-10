@@ -39,21 +39,6 @@ class CategoriesController extends AppController {
     }
 
     /**
-     * view method
-     *
-     * @throws NotFoundException
-     * @param string $id
-     * @return void
-     */
-//    public function view($id = null) {
-//        if (!$this->Category->exists($id)) {
-//            throw new NotFoundException(__('Invalid category'));
-//        }
-//        $options = array('conditions' => array('Category.' . $this->Category->primaryKey => $id));
-//        $this->set('category', $this->Category->find('first', $options));
-//    }
-
-    /**
      * add method
      *
      * @return void
@@ -110,7 +95,7 @@ class CategoriesController extends AppController {
             $this->Session->setFlash('Your need to create wallet first.');
             $this->redirect('/wallets/add');
         }
-        if($this->Category->getDeleteFlag($id) == 1){
+        if ($this->Category->getDeleteFlag($id) == 1) {
             $this->Session->setFlash('Can not edit default category');
             $this->redirect('/categories/');
         }
@@ -152,7 +137,7 @@ class CategoriesController extends AppController {
         }
         $wallets = $this->Category->Wallet->find('list', array('conditions' => array('Wallet.user_id' => $this->Auth->user('id'))));
         $typenames = $this->Category->Typename->find('list');
-        $specials = $this->Category->Special->find('list', array('conditions'=>array('Special.id'=>$this->request->data('Category')['special_id'])));
+        $specials = $this->Category->Special->find('list', array('conditions' => array('Special.id' => $this->request->data('Category')['special_id'])));
         $this->set(compact('wallets', 'typenames', 'specials'));
     }
 
@@ -168,7 +153,7 @@ class CategoriesController extends AppController {
             $this->Session->setFlash('Your need to create wallet first.');
             $this->redirect('/wallets/add');
         }
-        if($this->Category->getDeleteFlag($id) == 1){
+        if ($this->Category->getDeleteFlag($id) == 1) {
             $this->Session->setFlash('Can not delete default category');
             $this->redirect('/categories/');
         }
@@ -186,6 +171,13 @@ class CategoriesController extends AppController {
         return $this->redirect(array('action' => 'index'));
     }
 
+    /**
+     * show method
+     * show transactions by category
+     * @throws NotFoundException
+     * @param string $id
+     * @return void
+     */
     public function show($id = null) {
         if (!$this->Category->Wallet->User->checkWallet($this->Auth->user('id'))) {
             $this->Session->setFlash('Your need to create wallet first.');
@@ -233,6 +225,13 @@ class CategoriesController extends AppController {
         }
     }
 
+    /**
+     * getSpecial method
+     * get special_type of category
+     * @throws NotFoundException
+     * @param string $id
+     * @return void
+     */
     public function getSpecial() {
         $this->autoRender = false;
         $typename = $this->request->data['type'];

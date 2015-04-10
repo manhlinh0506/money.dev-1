@@ -36,11 +36,6 @@ class Category extends AppModel {
         'name' => array(
             'notEmpty' => array(
                 'rule' => array('notEmpty'),
-            //'message' => 'Your custom message here',
-            //'allowEmpty' => false,
-            //'required' => false,
-            //'last' => false, // Stop validation after this rule
-            //'on' => 'create', // Limit validation to 'create' or 'update' operations
             ),
             'length' => array(
                 'rule' => array('maxLength', 30),
@@ -50,31 +45,16 @@ class Category extends AppModel {
         'delete_flag' => array(
             'numeric' => array(
                 'rule' => array('numeric'),
-            //'message' => 'Your custom message here',
-            //'allowEmpty' => false,
-            //'required' => false,
-            //'last' => false, // Stop validation after this rule
-            //'on' => 'create', // Limit validation to 'create' or 'update' operations
             ),
         ),
         'wallet_id' => array(
             'numeric' => array(
                 'rule' => array('numeric'),
-            //'message' => 'Your custom message here',
-            //'allowEmpty' => false,
-            //'required' => false,
-            //'last' => false, // Stop validation after this rule
-            //'on' => 'create', // Limit validation to 'create' or 'update' operations
             ),
         ),
         'typename_id' => array(
             'numeric' => array(
                 'rule' => array('numeric'),
-            //'message' => 'Your custom message here',
-            //'allowEmpty' => false,
-            //'required' => false,
-            //'last' => false, // Stop validation after this rule
-            //'on' => 'create', // Limit validation to 'create' or 'update' operations
             ),
         ),
     );
@@ -236,16 +216,23 @@ class Category extends AppModel {
      * get special type
      * @throws NotFoundException
      * @param array $id
-     * @return boolean
+     * @return data
      */
     function getSpecial($id) {
         $data = $this->Special->find('first', array('conditions' => array('id' => $id)));
         return $data;
     }
 
-    function getDeleteFlag($id)
-    {
-        $data = $this->find('first', array('fields'=>'delete_flag', 'conditions'=>array('Category.id'=>$id)));
+    /**
+     * getDeleteFlag method
+     * define default category or not
+     * @throws NotFoundException
+     * @param array $id
+     * @return delete_flag
+     */
+    function getDeleteFlag($id) {
+        $data = $this->find('first', array('fields' => 'delete_flag', 'conditions' => array('Category.id' => $id)));
         return $data['Category']['delete_flag'];
     }
+
 }

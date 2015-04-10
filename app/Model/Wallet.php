@@ -101,8 +101,7 @@ class Wallet extends AppModel {
      * @param string $id
      * @return array
      */
-    public function deleteWallet($id)
-    {
+    public function deleteWallet($id) {
         $list_categories = $this->Category->find('all', array(
             'fields' => array('Category.id'),
             'conditions' => array('wallet_id' => $id)
@@ -127,23 +126,24 @@ class Wallet extends AppModel {
      * @param  $id
      * @return array
      */
-    public function getWallet($id)
-    {
+    public function getWallet($id) {
         return $this->find('all', array('conditions' => array('Wallet.user_id' => $id)));
     }
 
     /**
-     * getWallet method
+     * getAllWallet method
      * get all wallet ids of user
      */
-    public function getAllWallet($id)
-    {
+    public function getAllWallet($id) {
         $ids = $this->query('select current_wallet from users where id =' . $id);
         return $ids;
     }
 
-    public function changeCurrent($wallet_id, $user_id)
-    {
+    /**
+     * changeCurrent method
+     * change current wallet of user
+     */
+    public function changeCurrent($wallet_id, $user_id) {
         if ($changeWallet = $this->User->updateAll(
                 array('User.current_wallet' => $wallet_id), array('User.id' => $user_id)
                 )) {

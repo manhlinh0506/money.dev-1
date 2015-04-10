@@ -26,21 +26,6 @@ class TypenamesController extends AppController {
 //	}
 
 /**
- * view method
- *
- * @throws NotFoundException
- * @param string $id
- * @return void
- */
-//	public function view($id = null) {
-//		if (!$this->Typename->exists($id)) {
-//			throw new NotFoundException(__('Invalid typename'));
-//		}
-//		$options = array('conditions' => array('Typename.' . $this->Typename->primaryKey => $id));
-//		$this->set('typename', $this->Typename->find('first', $options));
-//	}
-
-/**
  * add method
  *
  * @return void
