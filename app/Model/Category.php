@@ -14,6 +14,19 @@ class Category extends AppModel {
 
     public $name = 'Category';
 
+    //id of earn
+    const EARN = 2;
+    //id of spent
+    const SPENT = 1;
+    //value of default special
+    const SPECIAL_NULL = null;
+    // id of loan
+    const SPECIAL_LOAN = 1;
+    // id of borrowing
+    const SPECIAL_BORROWING = 2;
+    //default
+    const DELETE_FLAG = 1;
+
     /**
      * Validation rules
      *
@@ -163,5 +176,76 @@ class Category extends AppModel {
             return false;
         }
     }
-    
+
+    /**
+     * addDefaultCategory method
+     * add 4 default categories
+     * @throws NotFoundException
+     * @param array $id
+     * @return boolean
+     */
+    public function addDefaultCategory($id) {
+        $this->create();
+        $cate_1 = array(
+            'name' => 'Other Spent',
+            'created' => date('Y-m-d H:i:s'),
+            'modified' => date('Y-m-d H:i:s'),
+            'delete_flag' => self::DELETE_FLAG,
+            'wallet_id' => $id,
+            'typename_id' => self::SPENT,
+            'special_id' => self::SPECIAL_NULL,
+        );
+        $this->save($cate_1);
+        $this->create();
+        $cate_2 = array(
+            'name' => 'Other Earned',
+            'created' => date('Y-m-d H:i:s'),
+            'modified' => date('Y-m-d H:i:s'),
+            'delete_flag' => self::DELETE_FLAG,
+            'wallet_id' => $id,
+            'typename_id' => self::EARN,
+            'special_id' => self::SPECIAL_NULL,
+        );
+        $this->save($cate_2);
+        $this->create();
+        $cate_3 = array(
+            'name' => 'Loan Spent',
+            'created' => date('Y-m-d H:i:s'),
+            'modified' => date('Y-m-d H:i:s'),
+            'delete_flag' => self::DELETE_FLAG,
+            'wallet_id' => $id,
+            'typename_id' => self::SPENT,
+            'special_id' => self::SPECIAL_LOAN,
+        );
+        $this->save($cate_3);
+        $this->create();
+        $cate_4 = array(
+            'name' => 'Debt Earned',
+            'created' => date('Y-m-d H:i:s'),
+            'modified' => date('Y-m-d H:i:s'),
+            'delete_flag' => self::DELETE_FLAG,
+            'wallet_id' => $id,
+            'typename_id' => self::EARN,
+            'special_id' => self::SPECIAL_BORROWING,
+        );
+        $this->save($cate_4);
+    }
+
+    /**
+     * getSpecial method
+     * get special type
+     * @throws NotFoundException
+     * @param array $id
+     * @return boolean
+     */
+    function getSpecial($id) {
+        $data = $this->Special->find('first', array('conditions' => array('id' => $id)));
+        return $data;
+    }
+
+    function getDeleteFlag($id)
+    {
+        $data = $this->find('first', array('fields'=>'delete_flag', 'conditions'=>array('Category.id'=>$id)));
+        return $data['Category']['delete_flag'];
+    }
 }

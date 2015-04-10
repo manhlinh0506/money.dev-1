@@ -18,9 +18,7 @@ and open the template in the editor.
 
 .footer {
     background-color: #f5f5f5 !important;
-    bottom: 0;
     height: 0px ;
-    position: absolute;
     width: 100%;
 }
 

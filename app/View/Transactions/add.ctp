@@ -14,40 +14,41 @@
         </div>
         <div class='input' id ='special_id' style='display:none'>
             <label id = 'label_loan' for="loan">For</label>
-        <select id ='loan'   name ='loan'>
-            <?php foreach ($trans as $tran): ?>
-            <option value="<?php echo $tran['id']; ?>" ><?php echo $tran['name']; ?></option>
+            <select id ='loan1'   name ='loan'>
+            <?php  foreach ($trans as $tran): ?>
+                <option value="<?php echo $tran['id']; ?>" ><?php echo $tran['name']; ?></option>
             <?php endforeach; ?>
-        </select>
+            </select>
         </div>
         <?php
 		echo $this->Form->input('date_of_execution');
 	?>
         <script>
             function checkCheckbox() {
-            var check = document.getElementById('check');
-            if (check.checked == true) {
-                document.getElementById('special_id').style.display = 'block';
-            } else {
-                document.getElementById('special_id').style.display = 'none';
+                var check = document.getElementById('check');
+                if (check.checked == true) {
+                    document.getElementById('special_id').style.display = 'block';
+                } else {
+                    document.getElementById('special_id').style.display = 'none';
+                }
             }
-        }
             $(document).ready(function () {
                 $('#category_id').on('change', function () {
                     var check = document.getElementById('check');
                     var checkbox = document.getElementById('checkbox');
                     var special_id = document.getElementById('special_id');
+                    var loan = document.getElementById('loan1');
                     loan.options.length = 0;
                     var select_box = document.getElementById('category_id').value;
                     $.ajax({
                         type: 'POST',
-                        url: '<?php echo $this->Html->url(array('controller'=>'transactions', 'action'=>'getcheckbox')); ?>',
+                        url: '<?php echo $this->Html->url(array('controller'=>'transactions', 'action'=>'getcheckboxadd')); ?>',
                         data: {text: select_box},
                         dataType: 'json',
                         success: function (data) {
                             if (data != null && data != '') {
                                 checkbox.style.display = 'block';
-                                if(check.checked == true) {
+                                if (check.checked == true) {
                                     special_id.style.display = 'block';
                                 }
                                 for (var i = 0; i < data.length; i++) {
@@ -60,6 +61,9 @@
                                 checkbox.style.display = 'none';
                                 special_id.style.display = 'none';
                             }
+                        },
+                        error: function () {
+                            alert('Error occurring. Please try again.');
                         }
                     });
                 });

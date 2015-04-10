@@ -185,7 +185,7 @@ class User extends AppModel {
     
     public function checkWallet($id)
     {
-        $wallet = $this->Wallet->find('first', array('conditions'=>array('Wallet.user_id'=>$id)));
+        $wallet = $this->Wallet->find('all', array('conditions'=>array('Wallet.user_id'=>$id)));
         return $wallet;
     }
 }

@@ -23,10 +23,6 @@ class WalletsController extends AppController {
      * @return void
      */
     public function index() {
-        if (!(count($this->Wallet->User->checkWallet($this->Auth->user('id'))) > 0)) {
-            $this->Session->setFlash('Your need to create wallet first.');
-            $this->redirect('/wallets/add');
-        }
         $current_wallet = $this->Wallet->User->find('first', array(
             'fields' => 'current_wallet',
             'conditions' => array('User.id' => $this->Auth->user('id'))
@@ -71,8 +67,10 @@ class WalletsController extends AppController {
                 );
 
                 if ($this->Wallet->save($wallet)) {
-                    if (count($this->Wallet->User->checkWallet($this->Auth->user('id')) == 1)) {
-                        $this->changeWallet($this->Wallet->getLastInsertID());
+                    $last_wallet = $this->Wallet->getLastInsertID();
+                    $this->Wallet->Category->addDefaultCategory($last_wallet);
+                    if (count($this->Wallet->User->checkWallet($this->Auth->user('id'))) == 1) {
+                        $this->changeWallet($last_wallet);
                     }
                     $this->Session->setFlash(__('The wallet has been saved.'));
                     return $this->redirect(array('action' => 'index'));
@@ -165,12 +163,10 @@ class WalletsController extends AppController {
         if (!$this->Wallet->exists($id)) {
             throw new NotFoundException(__('Invalid wallet'));
         }
-        $changeWallet = $this->Wallet->User->updateAll(
-                array('User.current_wallet' => $id), array('User.id' => $this->Auth->user('id'))
-        );
+        $changeWallet = $this->Wallet->changeCurrent($id, $this->Auth->user('id'));
         if ($changeWallet) {
             $userInfo = $this->Wallet->User->getUserInfo($this->Auth->user('id'));
-            $this->Session->setFlash(__('The current wallet is changed.'));
+            $this->Session->setFlash(__('Updated current wallet.'));
             return $this->redirect(array('action' => 'index'));
         } else {
             $this->Session->setFlash(__('The current wallet is not changed. Please try again.'));
@@ -188,6 +184,10 @@ class WalletsController extends AppController {
         if (!(count($this->Wallet->User->checkWallet($this->Auth->user('id'))) > 0)) {
             $this->Session->setFlash('Your need to create wallet first.');
             $this->redirect('/wallets/add');
+        }
+        if ((count($this->Wallet->User->checkWallet($this->Auth->user('id'))) == 1)) {
+            $this->Session->setFlash('You have only one wallet.');
+            $this->redirect('/wallets/');
         }
         if (!$this->Wallet->exists($id)) {
             throw new NotFoundException(__('Invalid wallet'));

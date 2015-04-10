@@ -11,9 +11,10 @@ App::uses('AppController', 'Controller');
 class CategoriesController extends AppController {
 
     // delete flag of category
-    const DELETE_FLAG_FALSE = 0;
+    const DEFAULT_0 = 0;
     // default special_id
     const SPECIAL_ID = null;
+
     /**
      * Components
      *
@@ -27,19 +28,13 @@ class CategoriesController extends AppController {
      * @return void
      */
     public function index() {
-        if (!(count($this->Category->Wallet->User->checkWallet($this->Auth->user('id')))>0)) {
+        if (!(count($this->Category->Wallet->User->checkWallet($this->Auth->user('id'))) > 0)) {
             $this->Session->setFlash('Your need to create wallet first.');
             $this->redirect('/wallets/add');
         }
         $ids = $this->Category->Wallet->getAllWallet($this->Auth->user('id'));
-        $arr = array();
-        $i = 0;
-        foreach ($ids as $id) {
-            $arr[$i] = $id['wallets']['id'];
-            $i++;
-        }
         $this->Paginator->settings = array(
-            'conditions' => array('Category.wallet_id' => $arr));
+            'conditions' => array('Category.wallet_id' => $ids[self::DEFAULT_0]['users']['current_wallet']));
         $this->set('categories', $this->Paginator->paginate());
     }
 
@@ -64,7 +59,7 @@ class CategoriesController extends AppController {
      * @return void
      */
     public function add() {
-        if (!(count($this->Category->Wallet->User->checkWallet($this->Auth->user('id')))>0)) {
+        if (!(count($this->Category->Wallet->User->checkWallet($this->Auth->user('id'))) > 0)) {
             $this->Session->setFlash('Your need to create wallet first.');
             $this->redirect('/wallets/add');
         }
@@ -76,7 +71,7 @@ class CategoriesController extends AppController {
                     'name' => $this->request->data('name'),
                     'created' => date('Y-m-d H:i:s'),
                     'modified' => date('Y-m-d H:i:s'),
-                    'delete_flag' => self::DELETE_FLAG_FALSE,
+                    'delete_flag' => self::DEFAULT_0,
                     'wallet_id' => $this->request->data('wallet_id'),
                     'typename_id' => $this->request->data('typename_id')
                 );
@@ -86,6 +81,7 @@ class CategoriesController extends AppController {
                     $category['special_id'] = self::SPECIAL_ID;
                 }
                 if ($this->Category->save($category)) {
+                    $this->Category->Wallet->changeCurrent($this->request->data('wallet_id'), $this->Auth->user('id'));
                     $this->Session->setFlash(__('The category has been saved.'));
                     return $this->redirect(array('action' => 'index'));
                 } else {
@@ -96,9 +92,10 @@ class CategoriesController extends AppController {
         $wallets = $this->Category->Wallet->find('list', array(
             'conditions' => array(
                 'Wallet.user_id' => $this->Auth->user('id'))));
+        $current_wallet = $this->Category->Wallet->getAllWallet($this->Auth->user('id'));
         $typenames = $this->Category->Typename->find('list');
-        $specials = $this->Category->Special->find('list');
-        $this->set(compact('wallets', 'typenames', 'specials'));
+        $specials = $this->Category->Special->find('list', array('conditions' => array('name' => 'loan')));
+        $this->set(compact('wallets', 'typenames', 'specials', 'current_wallet'));
     }
 
     /**
@@ -109,9 +106,13 @@ class CategoriesController extends AppController {
      * @return void
      */
     public function edit($id = null) {
-        if (!(count($this->Category->Wallet->User->checkWallet($this->Auth->user('id')))>0)) {
+        if (!(count($this->Category->Wallet->User->checkWallet($this->Auth->user('id'))) > 0)) {
             $this->Session->setFlash('Your need to create wallet first.');
             $this->redirect('/wallets/add');
+        }
+        if($this->Category->getDeleteFlag($id) == 1){
+            $this->Session->setFlash('Can not edit default category');
+            $this->redirect('/categories/');
         }
         if (!$this->Category->exists($id)) {
             throw new NotFoundException(__('Invalid category'));
@@ -149,10 +150,9 @@ class CategoriesController extends AppController {
             $options = array('conditions' => array('Category.' . $this->Category->primaryKey => $id));
             $this->request->data = $this->Category->find('first', $options);
         }
-
         $wallets = $this->Category->Wallet->find('list', array('conditions' => array('Wallet.user_id' => $this->Auth->user('id'))));
         $typenames = $this->Category->Typename->find('list');
-        $specials = $this->Category->Special->find('list');
+        $specials = $this->Category->Special->find('list', array('conditions'=>array('Special.id'=>$this->request->data('Category')['special_id'])));
         $this->set(compact('wallets', 'typenames', 'specials'));
     }
 
@@ -164,9 +164,13 @@ class CategoriesController extends AppController {
      * @return void
      */
     public function delete($id = null) {
-        if (!(count($this->Category->Wallet->User->checkWallet($this->Auth->user('id')))>0)) {
+        if (!(count($this->Category->Wallet->User->checkWallet($this->Auth->user('id'))) > 0)) {
             $this->Session->setFlash('Your need to create wallet first.');
             $this->redirect('/wallets/add');
+        }
+        if($this->Category->getDeleteFlag($id) == 1){
+            $this->Session->setFlash('Can not delete default category');
+            $this->redirect('/categories/');
         }
         $this->Category->id = $id;
         if (!$this->Category->exists()) {
@@ -183,7 +187,7 @@ class CategoriesController extends AppController {
     }
 
     public function show($id = null) {
-        if(!$this->Category->Wallet->User->checkWallet($this->Auth->user('id'))) {
+        if (!$this->Category->Wallet->User->checkWallet($this->Auth->user('id'))) {
             $this->Session->setFlash('Your need to create wallet first.');
             $this->redirect('/wallets/');
         }
@@ -198,7 +202,7 @@ class CategoriesController extends AppController {
 
         $this->set('transactions', $data);
     }
-    
+
     /**
      * deleteCategory method
      * delete all transactions of category with category id = $id
@@ -228,4 +232,12 @@ class CategoriesController extends AppController {
             return false;
         }
     }
+
+    public function getSpecial() {
+        $this->autoRender = false;
+        $typename = $this->request->data['type'];
+        $data = $this->Category->getSpecial($typename);
+        echo json_encode($data);
+    }
+
 }

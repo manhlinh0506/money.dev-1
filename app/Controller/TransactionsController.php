@@ -14,6 +14,8 @@ class TransactionsController extends AppController {
     const GET_ARRAY = 0;
     // value of flag
     const DELETE_FLAG = 0;
+    //value default of parent_transaction
+    const PARENT_TRANSACTION = null;
 
     /**
      * Components
@@ -28,28 +30,18 @@ class TransactionsController extends AppController {
      * @return void
      */
     public function index() {
-        if (!(count($this->Transaction->Category->Wallet->User->checkWallet($this->Auth->user('id')))>0)) {
+        if (!(count($this->Transaction->Category->Wallet->User->checkWallet($this->Auth->user('id'))) > 0)) {
             $this->Session->setFlash('Your need to create wallet first.');
             $this->redirect('/wallets/add');
         }
-        $ids = $this->Transaction->Category->Wallet->getAllWallet($this->Auth->user('id'));
-        $arr_wallet = array();
-        $i = 0;
-        foreach ($ids as $id) {
-            $arr[$i] = $id['wallets']['id'];
-            $i++;
-        }
-        $j = 0;
-        $arr_category = array();
-        foreach ($arr as $wallet) {
-            $arr_category[$j] = $this->Transaction->Category->find('all', array(
-                'conditions' => array(
-                    'Category.wallet_id' => $wallet)));
-            $j++;
-        }
+        $current_wallet = $this->Transaction->Category->Wallet->getAllWallet($this->Auth->user('id'));
+        $arr_category = $this->Transaction->Category->find('all', array(
+            'conditions' => array(
+                'Category.wallet_id' => $current_wallet[self::GET_ARRAY]['users']['current_wallet'])));
         $k = 0;
+
         $array_transaction = array();
-        foreach ($arr_category[self::GET_ARRAY] as $category) {
+        foreach ($arr_category as $category) {
             $array_transaction[$k] = $category['Category']['id'];
             $k++;
         }
@@ -59,27 +51,12 @@ class TransactionsController extends AppController {
     }
 
     /**
-     * view method
-     *
-     * @throws NotFoundException
-     * @param string $id
-     * @return void
-     */
-//    public function view($id = null) {
-//        if (!$this->Transaction->exists($id)) {
-//            throw new NotFoundException(__('Invalid transaction'));
-//        }
-//        $options = array('conditions' => array('Transaction.' . $this->Transaction->primaryKey => $id));
-//        $this->set('transaction', $this->Transaction->find('first', $options));
-//    }
-
-    /**
      * add method
      *
      * @return void
      */
     public function add() {
-        if (!(count($this->Transaction->Category->Wallet->User->checkWallet($this->Auth->user('id')))>0)) {
+        if (!(count($this->Transaction->Category->Wallet->User->checkWallet($this->Auth->user('id'))) > 0)) {
             $this->Session->setFlash('Your need to create wallet first.');
             $this->redirect('/wallets/add');
         }
@@ -90,6 +67,7 @@ class TransactionsController extends AppController {
                 $special = $this->Transaction->checkSpecial($this->request->data('category_id'));
                 $transaction = array();
                 $datetime = $this->request->data('Transaction')['date_of_execution'];
+                $datetime = $datetime['year'] . '-' . $datetime['month'] . '-' . $datetime['day'];
                 if ($special == null) {
                     //not special type
                     $transaction = array(
@@ -99,7 +77,7 @@ class TransactionsController extends AppController {
                         'modified' => date('Y-m-d H:i:s'),
                         'category_id' => $this->request->data('category_id'),
                         'delete_flag' => self::DELETE_FLAG,
-                        'date_of_execution' => $datetime['year'] . '-' . $datetime['month'] . '-' . $datetime['day']
+                        'date_of_execution' => $datetime
                     );
                 } else {
                     //special type
@@ -111,7 +89,7 @@ class TransactionsController extends AppController {
                             'modified' => date('Y-m-d H:i:s'),
                             'category_id' => $this->request->data('category_id'),
                             'delete_flag' => self::DELETE_FLAG,
-                            'date_of_execution' => $datetime['year'] . '-' . $datetime['month'] . '-' . $datetime['day']
+                            'date_of_execution' => $datetime
                         );
                     } else {
                         $transaction = array(
@@ -121,7 +99,7 @@ class TransactionsController extends AppController {
                             'modified' => date('Y-m-d H:i:s'),
                             'category_id' => $this->request->data('category_id'),
                             'delete_flag' => self::DELETE_FLAG,
-                            'date_of_execution' => $datetime['year'] . '-' . $datetime['month'] . '' . $datetime['day'] . '',
+                            'date_of_execution' => $datetime,
                             'parent_transaction' => '' . $this->request->data('loan'),
                         );
                     }
@@ -154,7 +132,7 @@ class TransactionsController extends AppController {
      * @return void
      */
     public function edit($id = null) {
-        if (!(count($this->Transaction->Category->Wallet->User->checkWallet($this->Auth->user('id')))>0)) {
+        if (!(count($this->Transaction->Category->Wallet->User->checkWallet($this->Auth->user('id'))) > 0)) {
             $this->Session->setFlash('Your need to create wallet first.');
             $this->redirect('/wallets/add');
         }
@@ -162,7 +140,41 @@ class TransactionsController extends AppController {
             throw new NotFoundException(__('Invalid transaction'));
         }
         if ($this->request->is(array('post', 'put'))) {
-            if ($this->Transaction->save($this->request->data)) {
+            $special = $this->Transaction->checkSpecial($this->request->data('category_id'));
+            $datetime = $this->request->data('Transaction')['date_of_execution'];
+            $updateTransaction = false;
+            $datetime = "'".$datetime['year'] . '-' . $datetime['month'] . '-' . $datetime['day']."'";
+            if ($special == null) {
+                $updateTransaction = $this->Transaction->updateAll(
+                        array('name' => "'" . $this->request->data('name') . "'",
+                    'transaction_value' => $this->request->data('transaction_value'),
+                    'modified' => "'" . date('Y-m-d H:i:s') . "'",
+                    'category_id' => $this->request->data('category_id'),
+                    'date_of_execution' => $datetime,
+                    'parent_transaction' => self::PARENT_TRANSACTION), array('Transaction.id' => $this->request->data('id'))
+                );
+            } else {
+                if ($this->request->data('published') == 0) {
+                    $updateTransaction = $this->Transaction->updateAll(
+                            array('name' => "'" . $this->request->data('name') . "'",
+                        'transaction_value' => $this->request->data('transaction_value'),
+                        'modified' => "'" . date('Y-m-d H:i:s') . "'",
+                        'category_id' => $this->request->data('category_id'),
+                        'date_of_execution' => $datetime,
+                        'parent_transaction' => self::PARENT_TRANSACTION), array('Transaction.id' => $this->request->data('id'))
+                    );
+                } else {
+                    $updateTransaction = $this->Transaction->updateAll(
+                            array('name' => "'" . $this->request->data('name') . "'",
+                        'transaction_value' => $this->request->data('transaction_value'),
+                        'modified' => "'" . date('Y-m-d H:i:s') . "'",
+                        'category_id' => $this->request->data('category_id'),
+                        'date_of_execution' =>  $datetime,
+                        'parent_transaction' => $this->request->data('loan')), array('Transaction.id' => $this->request->data('id'))
+                    );
+                }
+            }
+            if ($updateTransaction) {
                 $this->Session->setFlash(__('The transaction has been saved.'));
                 return $this->redirect(array('action' => 'index'));
             } else {
@@ -173,14 +185,14 @@ class TransactionsController extends AppController {
             $this->request->data = $this->Transaction->find('first', $options);
         }
         $categories = $this->Transaction->getCategory($this->Auth->user('id'));
-        $data = $this->Transaction->getFirstCategory($this->Auth->user('id'), $this->request->data('Transaction')['category_id']);
+        $data = $this->Transaction->getFirstCategoryToEdit($this->Auth->user('id'), $this->request->data('Transaction')['category_id'], $id);
         $trans = array();
         if (count($data) > 0) {
             for ($i = 0; $i < count($data); $i++) {
                 $trans[$i] = $data[$i]['transactions'];
             }
         }
-        $this->set(compact(array('categories','trans')));
+        $this->set(compact(array('categories', 'trans', 'parent_transaction')));
     }
 
     /**
@@ -191,7 +203,7 @@ class TransactionsController extends AppController {
      * @return void
      */
     public function delete($id = null) {
-        if (!(count($this->Transaction->Category->Wallet->User->checkWallet($this->Auth->user('id')))>0)) {
+        if (!(count($this->Transaction->Category->Wallet->User->checkWallet($this->Auth->user('id'))) > 0)) {
             $this->Session->setFlash('Your need to create wallet first.');
             $this->redirect('/wallets/add');
         }
@@ -227,17 +239,44 @@ class TransactionsController extends AppController {
     public function getcheckbox() {
         $this->autoRender = false;
         $checkbox_value = $this->request->data['text'];
+        $transaction_id = $this->request->data['id'];
         $data = $this->Transaction->getValue($checkbox_value);
         $details = '';
         if ($data['Category']['special_id'] == null) {
             $details = null;
         } else {
             if ($data['Category']['special_id'] == 1) {
-                $details = $this->Transaction->getLoan($this->Auth->user('id'));
+                $details = $this->Transaction->getLoan($this->Auth->user('id'), $transaction_id);
             } else {
-                $details = $this->Transaction->getBorrowing($this->Auth->user('id'));
+                $details = $this->Transaction->getBorrowing($this->Auth->user('id'), $transaction_id);
             }
         }
+
+        echo json_encode($details);
+    }
+
+    /**
+     * getCheckbox method
+     *
+     * @throws NotFoundException
+     * @param 
+     * @return void
+     */
+    public function getcheckboxadd() {
+        $this->autoRender = false;
+        $checkbox_value = $this->request->data['text'];
+        $data = $this->Transaction->getValue($checkbox_value);
+        $details = '';
+        if ($data['Category']['special_id'] == null) {
+            $details = null;
+        } else {
+            if ($data['Category']['special_id'] == 1) {
+                $details = $this->Transaction->getLoanAdd($this->Auth->user('id'));
+            } else {
+                $details = $this->Transaction->getBorrowingAdd($this->Auth->user('id'));
+            }
+        }
+
         echo json_encode($details);
     }
 

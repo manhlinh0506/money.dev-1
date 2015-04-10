@@ -23,7 +23,7 @@
 
 /** General Style Info **/
 body {
-	background: #003d4c;
+	background: #ccc !important;
 	font-family:'lucida grande',verdana,helvetica,arial,sans-serif;
 	font-size:90%;
 	margin: 0;
@@ -97,7 +97,7 @@ p {
 	text-decoration: underline;
 }
 #content{
-	background: #fff;
+	background: #eee;
 	clear: both;
 	color: #333;
 	padding: 10px 20px 40px 20px;

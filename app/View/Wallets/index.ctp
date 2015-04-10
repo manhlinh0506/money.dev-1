@@ -1,6 +1,6 @@
-<div class="wallets index">
+<div class="wallets index table-responsive">
     <h2><?php echo __('Wallets'); ?></h2>
-    <table cellpadding="0" cellspacing="0">
+    <table class='table' cellpadding="0" cellspacing="0">
         <thead>
             <tr>
                 <th><?php echo $this->Paginator->sort('name'); ?></th>

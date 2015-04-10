@@ -12,6 +12,7 @@ class UsersController extends AppController {
 
     // the first login
     const FIRST_LOG = 1;
+    const NOT_FIRST_LOG = 0;
     /**
      * Components
      *
@@ -48,11 +49,12 @@ class UsersController extends AppController {
         if ($this->request->is('post') && !empty($this->request->data)) {
             $this->User->set($this->request->data);
             if ($this->User->validates($this->User->validate)) {
-                if ($this->checkEmail(mysql_real_escape_string($_POST['username']))) {
+                if ($this->User->checkEmail(mysql_real_escape_string($_POST['username']))) {
                     $random_password = $this->generateRandomString();
                     $this->User->updateAll(
-                            array('password' => "'" . AuthComponent::password($random_password) . "'"),
-                            array('username' => mysql_real_escape_string($_POST['username']))
+                            array('password' => "'" . AuthComponent::password($random_password) . "'",
+                                'first_login' => self::FIRST_LOG
+                                ), array('username' => mysql_real_escape_string($_POST['username']))
                     );
                     $this->sendEmail($_POST['username'], $random_password);
                     $this->Session->setFlash('New password already sent to your email.');
@@ -86,7 +88,16 @@ class UsersController extends AppController {
             $this->User->set($this->request->data);
             if ($this->User->validates($this->User->validate)) {
                 if ($this->Auth->login()) {
-                    $this->redirect('/wallets/');
+                    $user = $this->User->find('first', array('conditions' => array('id' => $this->Auth->user('id'))));
+                    if (!$user['User']['first_login'] == 1) {
+                        if(count($this->User->checkWallet($this->Auth->user('id'))) > 0) {
+                            $this->redirect('/transactions/');
+                        } else {
+                            $this->redirect('/wallets/add');
+                        }
+                    } else {
+                        $this->redirect('/users/change');
+                    }
                 } else {
                     $error = 'Username or password is wrong';
                     $this->Session->setFlash($error);
@@ -97,7 +108,7 @@ class UsersController extends AppController {
     }
 
     /**
-     * login method
+     * change method
      *
      * @return void
      */
@@ -105,12 +116,18 @@ class UsersController extends AppController {
         if ($this->request->is('post')) {
             $this->User->set($this->request->data);
             if ($this->User->validates($this->User->validate)) {
-                if($this->User->check_password($this->request->data('old_password'),$this->Auth->user('username'))) {
+                if ($this->User->check_password($this->request->data('old_password'), $this->Auth->user('username'))) {
                     $this->User->updateAll(
-                            array('password' => "'" . AuthComponent::password($this->request->data('new_password')) . "'"),
-                            array('username' => $this->Auth->user('username'))
+                            array('password' => "'" . AuthComponent::password($this->request->data('new_password')) . "'", 
+                                'first_login' => self::NOT_FIRST_LOG
+                                ), array('username' => $this->Auth->user('username'))
                     );
                     $this->Session->setFlash('Updated your password');
+                    if(count($this->User->checkWallet($this->Auth->user('id'))) > 0) {
+                        $this->redirect('/transactions/');
+                    } else {
+                        $this->redirect('/wallets/add');
+                    }
                 } else {
                     $this->Session->setFlash('Password is not true');
                 }
@@ -261,7 +278,6 @@ class UsersController extends AppController {
             $randomString .= $characters [rand(0, $charactersLength - 1)];
         }
         return $randomString;
-    } 
-    
-    
+    }
+
 }
