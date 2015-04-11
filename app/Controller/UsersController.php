@@ -13,6 +13,7 @@ class UsersController extends AppController {
     // the first login
     const FIRST_LOG = 1;
     const NOT_FIRST_LOG = 0;
+
     /**
      * Components
      *
@@ -58,8 +59,8 @@ class UsersController extends AppController {
                     $random_password = $this->generateRandomString();
                     $this->User->updateAll(
                             array('password' => "'" . AuthComponent::password($random_password) . "'",
-                                'first_login' => self::FIRST_LOG
-                                ), array('username' => mysql_real_escape_string($_POST['username']))
+                        'first_login' => self::FIRST_LOG
+                            ), array('username' => mysql_real_escape_string($_POST['username']))
                     );
                     $this->sendEmail($_POST['username'], $random_password);
                     $this->Session->setFlash('New password already sent to your email.');
@@ -93,9 +94,10 @@ class UsersController extends AppController {
             $this->User->set($this->request->data);
             if ($this->User->validates($this->User->validate)) {
                 if ($this->Auth->login()) {
-                    $user = $this->User->find('first', array('conditions' => array('id' => $this->Auth->user('id'))));
+                    $user = $this->User->find('first', array(
+                        'conditions' => array('id' => $this->Auth->user('id'))));
                     if (!$user['User']['first_login'] == 1) {
-                        if(count($this->User->checkWallet($this->Auth->user('id'))) > 0) {
+                        if (count($this->User->checkWallet($this->Auth->user('id'))) > 0) {
                             $this->redirect('/transactions/');
                         } else {
                             $this->redirect('/wallets/add');
@@ -121,14 +123,15 @@ class UsersController extends AppController {
         if ($this->request->is('post')) {
             $this->User->set($this->request->data);
             if ($this->User->validates($this->User->validate)) {
-                if ($this->User->check_password($this->request->data('old_password'), $this->Auth->user('username'))) {
+                if ($this->User->check_password(
+                                $this->request->data('old_password'), $this->Auth->user('username'))) {
                     $this->User->updateAll(
-                            array('password' => "'" . AuthComponent::password($this->request->data('new_password')) . "'", 
-                                'first_login' => self::NOT_FIRST_LOG
-                                ), array('username' => $this->Auth->user('username'))
+                            array('password' => "'" . AuthComponent::password($this->request->data('new_password')) . "'",
+                        'first_login' => self::NOT_FIRST_LOG
+                            ), array('username' => $this->Auth->user('username'))
                     );
                     $this->Session->setFlash('Updated your password');
-                    if(count($this->User->checkWallet($this->Auth->user('id'))) > 0) {
+                    if (count($this->User->checkWallet($this->Auth->user('id'))) > 0) {
                         $this->redirect('/transactions/');
                     } else {
                         $this->redirect('/wallets/add');
@@ -181,7 +184,8 @@ class UsersController extends AppController {
                         'first_login' => self::FIRST_LOG,
                     );
                     if ($this->User->save($User)) {
-                        $this->Session->setFlash(__('The user has been saved. Password has already sent to your email.'));
+                        $this->Session->setFlash(__('The user has been saved. '
+                                        . 'Password has already sent to your email.'));
                         return $this->redirect(array(
                                     'action' => 'login'
                         ));
