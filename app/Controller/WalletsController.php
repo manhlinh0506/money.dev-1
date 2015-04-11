@@ -90,7 +90,8 @@ class WalletsController extends AppController {
                         array('Wallet.name' => "'" . $this->request->data('name') . "'",
                     'Wallet.currency_id' => $this->request->data('currency_id'),
                     'Wallet.modified' => "'" . date('Y-m-d H:i:s') . "'",
-                    'Wallet.balance' => $this->request->data('balance')), array('Wallet.id' => $this->request->data('id'))
+                    'Wallet.balance' => $this->request->data('balance')), array(
+                    'Wallet.id' => $this->request->data('id'))
                 );
                 if ($updateWallet) {
                     $this->Session->setFlash(__('The wallet has been saved.'));
@@ -198,21 +199,28 @@ class WalletsController extends AppController {
                     $tranfer_money = $this->request->data('balance');
                     $this->Wallet->updateAll(array(
                         'Wallet.modified' => "'" . date('Y-m-d H:i:s') . "'",
-                        'Wallet.balance' => $current_currency['Wallet']['balance'] - $tranfer_money), array('Wallet.id' => $id)
+                        'Wallet.balance' =>
+                        $current_currency['Wallet']['balance'] - $tranfer_money), array('Wallet.id' => $id)
                     );
                     $this->Wallet->updateAll(array(
                         'Wallet.modified' => "'" . date('Y-m-d H:i:s') . "'",
-                        'Wallet.balance' => $tranfer_currency['Wallet']['balance'] + $tranfer_money), array('Wallet.id' => $this->request->data('Wallet')['To'])
+                        'Wallet.balance' =>
+                        $tranfer_currency['Wallet']['balance'] + $tranfer_money), array(
+                        'Wallet.id' => $this->request->data('Wallet')['To'])
                     );
                 } else {
                     $tranfer_money = $this->request->data('balance') / $current_currency['Currency']['rate'] * $tranfer_currency['Currency']['rate'];
                     $this->Wallet->updateAll(array(
                         'Wallet.modified' => "'" . date('Y-m-d H:i:s') . "'",
-                        'Wallet.balance' => $current_currency['Wallet']['balance'] - $this->request->data('balance')), array('Wallet.id' => $id)
+                        'Wallet.balance' =>
+                        $current_currency['Wallet']['balance'] - $this->request->data('balance')), array(
+                        'Wallet.id' => $id)
                     );
                     $this->Wallet->updateAll(array(
                         'Wallet.modified' => "'" . date('Y-m-d H:i:s') . "'",
-                        'Wallet.balance' => $tranfer_currency['Wallet']['balance'] + $tranfer_money), array('Wallet.id' => $this->request->data('Wallet')['To'])
+                        'Wallet.balance' =>
+                        $tranfer_currency['Wallet']['balance'] + $tranfer_money), array(
+                        'Wallet.id' => $this->request->data('Wallet')['To'])
                     );
                 }
                 $ds->commit();
@@ -258,7 +266,8 @@ class WalletsController extends AppController {
                         }
                     } else {
                         if (count($info[$transation_list]) > 0) {
-                            $this->Wallet->Category->Transaction->delete($info[$transation_list][$transation_list]['Transaction']['id']);
+                            $this->Wallet->Category->Transaction->delete(
+                                    $info[$transation_list][$transation_list]['Transaction']['id']);
                         }
                     }
                     $this->Wallet->Category->delete($info['Category_id']);

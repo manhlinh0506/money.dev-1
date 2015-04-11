@@ -1,4 +1,5 @@
 <?php
+
 /**
  * CakePHP(tm) : Rapid Development Framework (http://cakephp.org)
  * Copyright (c) Cake Software Foundation, Inc. (http://cakefoundation.org)
@@ -19,7 +20,7 @@ $cakeVersion = __d('cake_dev', 'CakePHP %s', Configure::version())
 ?>
 <!DOCTYPE html>
 <html>
-<head>
+    <head>
 	<?php echo $this->Html->charset(); ?>
         <?php
             echo $this->Html->css('bootstrap.css');
@@ -28,10 +29,10 @@ $cakeVersion = __d('cake_dev', 'CakePHP %s', Configure::version())
             echo $this->Html->script('jquery.min.js'); 
 
           ?>
-	<title>
+        <title>
 		<?php echo $cakeDescription ?>:
 		<?php echo $this->fetch('title'); ?>
-	</title>
+        </title>
 	<?php
 		echo $this->Html->meta('icon');
 
@@ -41,10 +42,10 @@ $cakeVersion = __d('cake_dev', 'CakePHP %s', Configure::version())
 		echo $this->fetch('css');
 		echo $this->fetch('script');
 	?>
-</head>
-<body>
-	<div id="container">
-		<nav class="navbar navbar-inverse border-radius">
+    </head>
+    <body>
+        <div id="container">
+            <nav class="navbar navbar-inverse border-radius">
                 <div class="container-fluid">
                     <!-- Brand and toggle get grouped for better mobile display -->
                     <div class="navbar-header">
@@ -83,9 +84,9 @@ $cakeVersion = __d('cake_dev', 'CakePHP %s', Configure::version())
                             </li>
                         </ul>
                         <ul class="nav navbar-nav navbar-right">
-                            <li><?php echo $this->Html->link("eng",array('language'=>'eng'),array('target' => '_parent', 'escape' => false));?> </li>
-                            <li><?php echo $this->Html->link("vie",array('language'=>'vie'),array('target' => '_parent', 'escape' => false));?></li>
-                            <li><a href="#">Monthly Report</a></li>
+                            <li><?php echo $this->Html->link('English', array('language'=>'eng')); ?> </li>
+                            <li><?php echo $this->Html->link('Vietnamese', array('language'=>'vie')); ?></li>
+                            <li><?php echo $this->Html->link(__('Monthly Report'), array('controller' => 'reports', 'action' => 'index')); ?></li>
                             <li class="dropdown">
                                     <?php 
                                         if($users_username == null || $users_username =='') :
@@ -105,20 +106,21 @@ $cakeVersion = __d('cake_dev', 'CakePHP %s', Configure::version())
                     </div><!-- /.navbar-collapse -->
                 </div><!-- /.container-fluid -->
             </nav>  
-		<div id="content">
-                        
+            <div id="content">
+
 			<?php echo $this->Session->flash(); ?>
 
 			<?php echo $this->fetch('content'); ?>
-		</div>
-		<div id="footer">
-			<p>
+            </div>
+            <div id="footer">
+                <p>
 				<?php  echo $cakeVersion; ?>
-			</p>
-		</div>
+                </p>
+            </div>
         <?php
-            echo $this->Html->script('bootstrap.min.js');  
+            echo $this->Html->script('bootstrap.min.js');
+            echo $this->element('sql_dump');
         ?>
-	</div>
-</body>
+        </div>
+    </body>
 </html>
