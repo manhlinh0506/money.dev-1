@@ -23,6 +23,7 @@ class TransactionsController extends AppController {
      * @var array
      */
     public $components = array('Paginator');
+
     /**
      * index method
      *
@@ -112,10 +113,6 @@ class TransactionsController extends AppController {
             }
         }
         $categories = $this->Transaction->getCategory($this->Auth->user('id'));
-        if($categories == null) {
-            $this->Session->setFlash(__('Please set current wallet.'));
-            $this->redirect('/wallets/');
-        }
         $data = $this->Transaction->getFirstCategory($this->Auth->user('id'), key($categories));
         $trans = array();
         if (count($data) > 0) {
@@ -154,8 +151,7 @@ class TransactionsController extends AppController {
                     'modified' => "'" . date('Y-m-d H:i:s') . "'",
                     'category_id' => $this->request->data('category_id'),
                     'date_of_execution' => $datetime,
-                    'parent_transaction' => self::PARENT_TRANSACTION), array(
-                    'Transaction.id' => $this->request->data('id'))
+                    'parent_transaction' => self::PARENT_TRANSACTION), array('Transaction.id' => $this->request->data('id'))
                 );
             } else {
                 if ($this->request->data('published') == 0) {
@@ -165,8 +161,7 @@ class TransactionsController extends AppController {
                         'modified' => "'" . date('Y-m-d H:i:s') . "'",
                         'category_id' => $this->request->data('category_id'),
                         'date_of_execution' => $datetime,
-                        'parent_transaction' => self::PARENT_TRANSACTION), array(
-                        'Transaction.id' => $this->request->data('id'))
+                        'parent_transaction' => self::PARENT_TRANSACTION), array('Transaction.id' => $this->request->data('id'))
                     );
                 } else {
                     $updateTransaction = $this->Transaction->updateAll(
@@ -175,8 +170,7 @@ class TransactionsController extends AppController {
                         'modified' => "'" . date('Y-m-d H:i:s') . "'",
                         'category_id' => $this->request->data('category_id'),
                         'date_of_execution' => $datetime,
-                        'parent_transaction' => $this->request->data('loan')), array(
-                        'Transaction.id' => $this->request->data('id'))
+                        'parent_transaction' => $this->request->data('loan')), array('Transaction.id' => $this->request->data('id'))
                     );
                 }
             }
@@ -191,8 +185,7 @@ class TransactionsController extends AppController {
             $this->request->data = $this->Transaction->find('first', $options);
         }
         $categories = $this->Transaction->getCategory($this->Auth->user('id'));
-        $data = $this->Transaction->getFirstCategoryToEdit($this->Auth->user('id'), 
-                $this->request->data('Transaction')['category_id'], $id);
+        $data = $this->Transaction->getFirstCategoryToEdit($this->Auth->user('id'), $this->request->data('Transaction')['category_id'], $id);
         $trans = array();
         if (count($data) > 0) {
             for ($i = 0; $i < count($data); $i++) {
@@ -287,18 +280,4 @@ class TransactionsController extends AppController {
         echo json_encode($details);
     }
 
-    public function showbydate()
-    {
-        $this->autoRender = false;
-        $date = $this->request->data['date'];
-        $month = $this->request->data['month'];
-        $year = $this->request->data['year'];
-        $datetime =  $year.'-'.$month.'-'.$date;
-        $data = $this->Transaction->searchByDate($datetime, $this->Auth->user('id'));
-        if(count($data)>0) {
-            return json_encode($data);
-        } else {
-            return null;
-        }
-    }
 }

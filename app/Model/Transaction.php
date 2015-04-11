@@ -78,8 +78,7 @@ class Transaction extends AppModel {
      * get information of category
      * @var $id
      */
-    public function getValue($id)
-    {
+    public function getValue($id) {
         if (!$this->Category->exists($id)) {
             throw new NotFoundException(__('Invalid id'));
         }
@@ -92,8 +91,7 @@ class Transaction extends AppModel {
      * get categories have loan type
      * @var $id
      */
-    public function getLoan($id, $transaction_id)
-    {
+    public function getLoan($id, $transaction_id) {
         $current_wallet = $this->Category->Wallet->getAllWallet($id);
         $loan_details = $this->query('select * from users,wallets,categories,transactions '
                 . 'where users.id = ' . $id . ' and users.id = wallets.user_id and '
@@ -109,8 +107,7 @@ class Transaction extends AppModel {
      * get categories have borrowing type
      * @var $id
      */
-    public function getBorrowing($id, $transaction_id)
-    {
+    public function getBorrowing($id, $transaction_id) {
         $current_wallet = $this->Category->Wallet->getAllWallet($id);
         $borrowing_details = $this->query('select * from users,wallets,categories,transactions '
                 . 'where users.id = ' . $id . ' and users.id = wallets.user_id and '
@@ -126,12 +123,8 @@ class Transaction extends AppModel {
      * get all categories of current wallet
      * @var $id
      */
-    public function getCategory($id)
-    {
+    public function getCategory($id) {
         $current_wallet = $this->Category->Wallet->getAllWallet($id);
-        if($current_wallet[0]['users']['current_wallet'] == null) {
-            return null;
-        }
         $categories = $this->query('select categories.id, categories.name from users, wallets, categories where users.id=' . $id . ''
                 . ' and users.id = wallets.user_id and wallets.id = ' . $current_wallet[0]['users']['current_wallet'] . ' and wallets.id = categories.wallet_id');
         $arr = array();
@@ -143,11 +136,10 @@ class Transaction extends AppModel {
 
     /**
      * getFirstCategory function
-     * get all transaction of first categories when display at add category page
+     * get all transaction of first catefories when display at add category page
      * @var $user_id, $category_id
      */
-    public function getFirstCategory($user_id, $category_id)
-    {
+    public function getFirstCategory($user_id, $category_id) {
         $current_wallet = $this->Category->Wallet->getAllWallet($user_id);
         $special_type = $this->query('select special_id from categories where categories.id=' . $category_id);
         $special_id = $special_type[0]['categories']['special_id'];
@@ -166,8 +158,7 @@ class Transaction extends AppModel {
      * check special type
      * @var $id
      */
-    public function checkSpecial($id)
-    {
+    public function checkSpecial($id) {
         $data = $this->query('select special_id from categories where categories.id =' . $id);
         return $data[0]['categories']['special_id'];
     }
@@ -177,8 +168,7 @@ class Transaction extends AppModel {
      * get child transactions if exist
      * @var $id
      */
-    public function getChild_transaction($id)
-    {
+    public function getChild_transaction($id) {
         $list_child = $this->find('list', array('conditions' => array('parent_transaction' => $id)));
         return $list_child;
     }
@@ -188,8 +178,7 @@ class Transaction extends AppModel {
      * get first category to display in edit transaction form
      * @var $user_id, $category_id, $transaction_id
      */
-    public function getFirstCategoryToEdit($user_id, $category_id, $transaction_id)
-    {
+    public function getFirstCategoryToEdit($user_id, $category_id, $transaction_id) {
         $current_wallet = $this->Category->Wallet->getAllWallet($user_id);
         $special_type = $this->query('select special_id from categories where categories.id=' . $category_id);
         $special_id = $special_type[0]['categories']['special_id'];
@@ -208,8 +197,7 @@ class Transaction extends AppModel {
      * get categories have loan type to edit transaction
      * @var $id
      */
-    public function getLoanAdd($id)
-    {
+    public function getLoanAdd($id) {
         $current_wallet = $this->Category->Wallet->getAllWallet($id);
         $loan_details = $this->query('select * from users,wallets,categories,transactions '
                 . 'where users.id = ' . $id . ' and users.id = wallets.user_id and '
@@ -224,8 +212,7 @@ class Transaction extends AppModel {
      * get categories have borrowing type to edit transaction
      * @var $id
      */
-    public function getBorrowingAdd($id)
-    {
+    public function getBorrowingAdd($id) {
         $current_wallet = $this->Category->Wallet->getAllWallet($id);
         $borrowing_details = $this->query('select * from users,wallets,categories,transactions '
                 . 'where users.id = ' . $id . ' and users.id = wallets.user_id and '
@@ -235,15 +222,4 @@ class Transaction extends AppModel {
         return $borrowing_details;
     }
 
-    public function searchByDate($datetime, $id)
-    {
-        $current_wallet = $this->Category->Wallet->getAllWallet($id);
-        $data = $this->query("select transactions.id, transactions.name, transactions.transaction_value, "
-                . "transactions.created, transactions.modified, categories.name, transactions.date_of_execution,"
-                . "transactions.parent_transaction from users, wallets, categories, transactions where "
-                . "users.id = ".$id." and wallets.id = ".$current_wallet[0]['users']['current_wallet'].""
-                . " and wallets.user_id =".$id." and wallets.id = categories.wallet_id and "
-                . "transactions.category_id = categories.id and transactions.date_of_execution = '".$datetime."'");
-        return $data;
-    }
 }

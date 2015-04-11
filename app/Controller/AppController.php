@@ -36,7 +36,7 @@ class AppController extends Controller {
     public $components = array('DebugKit.Toolbar', 'Session', 'Auth' => array(
             'loginRedirect' => array('controller' => 'wallets', 'action' => 'add'),
             'logoutRedirect' => array('controller' => 'users', 'action' => 'login')
-        ), 'Email', 'Cookie');
+        ), 'Email');
 
     public function beforeFilter() {
         Configure::write('Config.language', $this->Session->read('Config.language'));

@@ -79,8 +79,7 @@ class CategoriesController extends AppController {
                 'Wallet.user_id' => $this->Auth->user('id'))));
         $current_wallet = $this->Category->Wallet->getAllWallet($this->Auth->user('id'));
         $typenames = $this->Category->Typename->find('list');
-        $specials = $this->Category->Special->find('list', array(
-            'conditions' => array('name' => 'loan')));
+        $specials = $this->Category->Special->find('list', array('conditions' => array('name' => 'loan')));
         $this->set(compact('wallets', 'typenames', 'specials', 'current_wallet'));
     }
 
@@ -114,8 +113,7 @@ class CategoriesController extends AppController {
                         'Category.modified' => "'" . date('Y-m-d H:i:s') . "'",
                         'Category.wallet_id' => $this->request->data('wallet_id'),
                         'Category.typename_id' => $this->request->data('typename_id'),
-                        'Category.special_id' => $this->request->data('special_id')), array(
-                        'Category.id' => $this->request->data('id'))
+                        'Category.special_id' => $this->request->data('special_id')), array('Category.id' => $this->request->data('id'))
                     );
                 } else {
                     $updateCategory = $this->Category->updateAll(
@@ -123,8 +121,7 @@ class CategoriesController extends AppController {
                         'Category.modified' => "'" . date('Y-m-d H:i:s') . "'",
                         'Category.wallet_id' => $this->request->data('wallet_id'),
                         'Category.typename_id' => $this->request->data('typename_id'),
-                        'Category.special_id' => self::SPECIAL_ID), array(
-                        'Category.id' => $this->request->data('id'))
+                        'Category.special_id' => self::SPECIAL_ID), array('Category.id' => $this->request->data('id'))
                     );
                 }
                 if ($updateCategory) {
@@ -138,13 +135,9 @@ class CategoriesController extends AppController {
             $options = array('conditions' => array('Category.' . $this->Category->primaryKey => $id));
             $this->request->data = $this->Category->find('first', $options);
         }
-        $wallets = $this->Category->Wallet->find('list', array(
-            'conditions' => array(
-                'Wallet.user_id' => $this->Auth->user('id'))));
+        $wallets = $this->Category->Wallet->find('list', array('conditions' => array('Wallet.user_id' => $this->Auth->user('id'))));
         $typenames = $this->Category->Typename->find('list');
-        $specials = $this->Category->Special->find('list', array(
-            'conditions' => array(
-                'Special.id' => $this->request->data('Category')['special_id'])));
+        $specials = $this->Category->Special->find('list', array('conditions' => array('Special.id' => $this->request->data('Category')['special_id'])));
         $this->set(compact('wallets', 'typenames', 'specials'));
     }
 
